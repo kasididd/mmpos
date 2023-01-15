@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:mmpos/auth/login_page.dart';
+import 'package:mmpos/page/2-main_page.dart';
+import 'package:mmpos/provider/store.dart';
+import 'package:provider/provider.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
@@ -19,11 +22,29 @@ class _WelcomePageState extends State<WelcomePage> {
     Timer(
         Duration(seconds: 3),
         () => Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => LoginPage())));
+            context,
+            MaterialPageRoute(
+                builder: (context) => login ? MainPage() : LoginPage())));
+  }
+
+  bool login = false;
+  bool check = true;
+  checkLogin(provider) async {
+    if (check) {
+      await provider.hiveRe();
+
+      if (provider.email != null) {
+        if (provider.email != "_") login = true;
+        check = false;
+        print(provider.email);
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    Store provider = context.watch<Store>();
+    if (check) checkLogin(provider);
     return Container(
       decoration: const BoxDecoration(
           gradient: LinearGradient(

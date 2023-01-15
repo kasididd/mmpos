@@ -2,11 +2,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:mmpos/API/service_api.dart';
 import 'package:mmpos/auth/forgot_page.dart';
 import 'package:mmpos/auth/register_page.dart';
 import 'package:mmpos/layout/phone.dart';
+import 'package:mmpos/page/1-welcome_page.dart';
 import 'package:mmpos/page/2-main_page.dart';
 import 'package:http/http.dart' as http;
+import 'package:mmpos/provider/store.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -19,7 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   //Auth Start
 
   TextEditingController _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
 
   // Future LoginComplete() async {
   //   var urls = "http://192.168.10.106/login.php";
@@ -40,6 +44,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    Store provider = context.watch<Store>();
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
@@ -89,6 +94,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: TextField(
                   //
                   controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
                   //
                   decoration: InputDecoration(
                       enabledBorder: OutlineInputBorder(
@@ -184,13 +190,26 @@ class _LoginPageState extends State<LoginPage> {
                 child: GestureDetector(
                   onTap: () {},
                   child: GestureDetector(
-                    onTap: () {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MainPage(),
-                          ));
-                      print('MainPage');
+                    onTap: () async {
+                      List res = await UserStore.login(
+                          email: _emailController.text.trim(),
+                          password: _passwordController.text.trim());
+                      if (res.isEmpty) {
+                        print('รหัสไม่ถูก');
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => WelcomePage(),
+                            ));
+                      } else {
+                        await provider.hiveLogin(res[0]);
+                        print(await provider.email);
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => WelcomePage(),
+                            ));
+                      }
                     },
                     child: Container(
                       padding: EdgeInsets.all(20),

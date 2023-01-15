@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mmpos/API/service_api.dart';
 
 class Store with ChangeNotifier {
@@ -220,6 +222,36 @@ class Store with ChangeNotifier {
 
   getCate(List get) {
     cate = get;
+    notifyListeners();
+  }
+
+  // login
+  dynamic email = '';
+  hiveLogin(data) async {
+    await Hive.initFlutter();
+    await Hive.openBox('email');
+    var emailHive = await Hive.box('email');
+    emailHive.put(0, data);
+    email = data;
+    notifyListeners();
+  }
+
+  hiveRe() async {
+    await Hive.initFlutter();
+    await Hive.openBox('email');
+    var emailHive = await Hive.box('email');
+    email = await emailHive.get(0);
+    if (email == null) {
+      email = "_";
+    }
+    notifyListeners();
+  }
+
+  hiveLogout() async {
+    await Hive.initFlutter();
+    await Hive.openBox('email');
+    var emailHive = await Hive.box('email');
+    emailHive.deleteAt(0);
     notifyListeners();
   }
 }

@@ -27,7 +27,9 @@ class _StockPageState extends State<StockPage> {
     print(stock);
     return SafeArea(
         child: Scaffold(
-      drawer: DrawerWidget(),
+      drawer: DrawerWidget(
+        provider: provider,
+      ),
       //Appbar Stop
       appBar: AppBar(
         //

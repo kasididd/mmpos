@@ -2,8 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:mmpos/provider/store.dart';
 import 'package:mmpos/widget/drawer_widget.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class DashBoard extends StatefulWidget {
   const DashBoard({super.key});
@@ -22,6 +24,7 @@ class _DashBoardState extends State<DashBoard> {
 
   @override
   Widget build(BuildContext context) {
+    Store provider = context.watch<Store>();
     //Dateformat ไทย Start
     var formatter = DateFormat.yMMMM();
     //Dateformat ไทย Stop
@@ -29,7 +32,9 @@ class _DashBoardState extends State<DashBoard> {
       //
       backgroundColor: Colors.grey.shade200,
       //
-      drawer: DrawerWidget(),
+      drawer: DrawerWidget(
+        provider: provider,
+      ),
       //Appbar Start
       appBar: AppBar(
         //

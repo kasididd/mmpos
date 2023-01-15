@@ -39,7 +39,7 @@ class _TabletTableState extends State<TabletTable> {
   bool getData = true;
   int priceSum = 0;
   bool onOff = true;
-  var colorsPicked = Color(0xfff44336);
+  var colorsPicked = const Color(0xfff44336);
   List getItem = [
     {
       "u_id": "46",
@@ -77,7 +77,9 @@ class _TabletTableState extends State<TabletTable> {
       //
       backgroundColor: Colors.grey.shade200,
       //
-      drawer: DrawerWidget(),
+      drawer: DrawerWidget(
+        provider: provider,
+      ),
       //Appbar Start
       appBar: AppBar(
         //
@@ -87,7 +89,7 @@ class _TabletTableState extends State<TabletTable> {
         leading: Builder(
           builder: (context) => // Ensure Scaffold is in context
               IconButton(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.menu,
                     color: Colors.red,
                   ),
@@ -119,7 +121,7 @@ class _TabletTableState extends State<TabletTable> {
                               horizontal: 10, vertical: 5),
                           child: SearchField(
                             controller: search,
-                            searchInputDecoration: InputDecoration(
+                            searchInputDecoration: const InputDecoration(
                               border: InputBorder.none,
                               icon: Icon(Icons.search),
                               hintText: 'ค้นหาสินค้าทั้งหมด...',
@@ -165,11 +167,11 @@ class _TabletTableState extends State<TabletTable> {
                       onTap: () => searchingByBarcode(),
                       child: Column(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.search,
                             color: Colors.red,
                           ),
-                          Text(
+                          const Text(
                             'รหัสสินค้า',
                             style: TextStyle(color: Colors.red, fontSize: 13),
                           )
@@ -184,11 +186,11 @@ class _TabletTableState extends State<TabletTable> {
                   child: Container(
                     child: Column(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.point_of_sale_sharp,
                           color: Colors.red,
                         ),
-                        Text(
+                        const Text(
                           'เปิดลิ้นชัก',
                           style: TextStyle(color: Colors.red, fontSize: 13),
                         )
@@ -204,11 +206,11 @@ class _TabletTableState extends State<TabletTable> {
                       onTap: () => coupon(),
                       child: Column(
                         children: [
-                          Icon(
+                          const Icon(
                             CupertinoIcons.tickets,
                             color: Colors.red,
                           ),
-                          Text(
+                          const Text(
                             'ส่วนลดท้ายบิล',
                             style: TextStyle(color: Colors.red, fontSize: 13),
                           )
@@ -220,15 +222,15 @@ class _TabletTableState extends State<TabletTable> {
                 //
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Container(
+                  child: SizedBox(
                     height: 50,
                     child: Column(
                       children: [
-                        Icon(
+                        const Icon(
                           CupertinoIcons.square_arrow_down,
                           color: Colors.red,
                         ),
-                        Text(
+                        const Text(
                           'พักบิล & เรียกคืน',
                           style: TextStyle(color: Colors.red, fontSize: 13),
                         )
@@ -239,17 +241,17 @@ class _TabletTableState extends State<TabletTable> {
                 //
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Container(
+                  child: SizedBox(
                     height: 50,
                     child: InkWell(
                       onTap: () => person(),
                       child: Column(
                         children: [
-                          Icon(
+                          const Icon(
                             CupertinoIcons.person,
                             color: Colors.red,
                           ),
-                          Text(
+                          const Text(
                             'ลูกค้า',
                             style: TextStyle(color: Colors.red, fontSize: 13),
                           )
@@ -280,7 +282,7 @@ class _TabletTableState extends State<TabletTable> {
 
           //Body Start
 
-          Container(
+          SizedBox(
             width: MediaQuery.of(context).size.width * 0.75,
             height: double.infinity,
             child: Column(
@@ -293,24 +295,24 @@ class _TabletTableState extends State<TabletTable> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           //
-                          Container(
+                          SizedBox(
                             width: MediaQuery.of(context).size.width * 0.75,
                             height: 30,
                             child: ElevatedButton(
                                 //
                                 style: ElevatedButton.styleFrom(
                                     primary: Colors.white,
-                                    side: BorderSide(color: Colors.red)),
+                                    side: const BorderSide(color: Colors.red)),
                                 //
                                 onPressed: () {},
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Icon(
+                                    const Icon(
                                       CupertinoIcons.barcode_viewfinder,
                                       color: Colors.red,
                                     ),
-                                    Text(
+                                    const Text(
                                       'สแกน',
                                       style: TextStyle(color: Colors.red),
                                     )
@@ -330,7 +332,7 @@ class _TabletTableState extends State<TabletTable> {
 
           //Payment Start
 
-          Container(
+          SizedBox(
             width: MediaQuery.of(context).size.width * 0.17,
             height: double.infinity,
             child: Column(
@@ -340,7 +342,7 @@ class _TabletTableState extends State<TabletTable> {
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   child: TextButton(
                     onPressed: () {},
-                    child: Text(
+                    child: const Text(
                       'เลือกโต๊ะ',
                       style: TextStyle(color: Colors.red),
                     ),
@@ -362,12 +364,12 @@ class _TabletTableState extends State<TabletTable> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           //
                           children: [
-                            Text(
+                            const Text(
                               'รวมก่อนลด',
                               style: TextStyle(
                                   fontSize: 15, color: Colors.black54),
                             ),
-                            Text(
+                            const Text(
                               '0.00',
                               style: TextStyle(
                                   fontSize: 15, color: Colors.black54),
@@ -384,12 +386,12 @@ class _TabletTableState extends State<TabletTable> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           //
                           children: [
-                            Text(
+                            const Text(
                               'THB',
                               style: TextStyle(
                                   fontSize: 20, color: Colors.black54),
                             ),
-                            Text(
+                            const Text(
                               '0.00',
                               style: TextStyle(
                                   fontSize: 20, color: Colors.black54),
@@ -398,7 +400,7 @@ class _TabletTableState extends State<TabletTable> {
                         ),
                       ),
                       //
-                      Container(
+                      SizedBox(
                         width: double.infinity,
                         height: 30,
                         child: ElevatedButton(
@@ -417,7 +419,7 @@ class _TabletTableState extends State<TabletTable> {
                                     },
                                   );
                                 },
-                          child: Text('ชำระเงิน'),
+                          child: const Text('ชำระเงิน'),
                         ),
                       )
                       //
@@ -438,13 +440,13 @@ class _TabletTableState extends State<TabletTable> {
                                     showDialog(
                                       context: context,
                                       builder: (context) => AlertDialog(
-                                          title: Text(
+                                          title: const Text(
                                             'ลบทั้งหมด',
                                             style: TextStyle(
                                                 color: Colors.red,
                                                 fontWeight: FontWeight.bold),
                                           ),
-                                          content: Text(
+                                          content: const Text(
                                               'คุณต้องการลบสินค้าที่เลือกทั้งหมดหรือไม่'),
                                           actions: [
                                             TextButton(
@@ -455,7 +457,7 @@ class _TabletTableState extends State<TabletTable> {
                                                   });
                                                   Navigator.pop(context);
                                                 },
-                                                child: Text(
+                                                child: const Text(
                                                   'ลบทั้งหมด',
                                                   style: TextStyle(
                                                       fontSize: 18,
@@ -465,7 +467,7 @@ class _TabletTableState extends State<TabletTable> {
                                                 onPressed: () {
                                                   Navigator.pop(context);
                                                 },
-                                                child: Text(
+                                                child: const Text(
                                                   'ยกเลิก',
                                                   style: TextStyle(
                                                       fontSize: 18,
@@ -474,7 +476,7 @@ class _TabletTableState extends State<TabletTable> {
                                           ]),
                                     );
                                   },
-                                  child: Text(
+                                  child: const Text(
                                     'ลบทั้งหมด',
                                     style: TextStyle(
                                         color: Colors.red,
@@ -506,7 +508,7 @@ class _TabletTableState extends State<TabletTable> {
     }
 
     return SingleChildScrollView(
-      child: Container(
+      child: SizedBox(
         height: size.height * .9,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -516,7 +518,7 @@ class _TabletTableState extends State<TabletTable> {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
+                    SizedBox(
                       width: double.infinity,
                       height: 60,
                       child: TextButton(
@@ -524,16 +526,17 @@ class _TabletTableState extends State<TabletTable> {
                           provider.table == null
                               ? 'เลือกโต๊ะ'
                               : provider.table.toString(),
-                          style: TextStyle(color: Colors.red, fontSize: 15),
+                          style:
+                              const TextStyle(color: Colors.red, fontSize: 15),
                         ),
                         onPressed: () async {
-                          await selectTable();
+                          await selectTable(provider);
                           showDialog(
                             context: context,
                             builder: (context) => AlertDialog(
                                 backgroundColor:
-                                    Color.fromARGB(255, 255, 131, 131),
-                                content: Container(
+                                    const Color.fromARGB(255, 255, 131, 131),
+                                content: SizedBox(
                                   width: size.width * .6,
                                   height: size.height * .7,
                                   child: Column(
@@ -545,22 +548,22 @@ class _TabletTableState extends State<TabletTable> {
                                           IconButton(
                                               onPressed: () =>
                                                   Navigator.pop(context),
-                                              icon: Icon(
+                                              icon: const Icon(
                                                 Icons.close,
                                                 color: Colors.red,
                                               )),
-                                          Text("เลือกโต๊ะ"),
+                                          const Text("เลือกโต๊ะ"),
                                           IconButton(
                                               onPressed: () =>
                                                   tableSelect(context),
-                                              icon: Icon(
+                                              icon: const Icon(
                                                 Icons.add,
                                                 color: Colors.green,
                                               ))
                                         ],
                                       ),
                                       Expanded(
-                                          child: table.length > 0
+                                          child: table.isNotEmpty
                                               ? GridView.count(
                                                   crossAxisCount: 6,
                                                   children: [
@@ -589,7 +592,7 @@ class _TabletTableState extends State<TabletTable> {
                                                       )
                                                   ],
                                                 )
-                                              : Text(''))
+                                              : const Text(''))
                                     ],
                                   ),
                                 )),
@@ -603,14 +606,20 @@ class _TabletTableState extends State<TabletTable> {
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [Text('รวมก่อนลด'), Text('$priceSum')],
+                            children: [
+                              const Text('รวมก่อนลด'),
+                              Text('$priceSum')
+                            ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [Text('THB'), Text(selled().toString())],
+                            children: [
+                              const Text('THB'),
+                              Text(selled().toString())
+                            ],
                           ),
                         ],
                       ),
@@ -629,17 +638,16 @@ class _TabletTableState extends State<TabletTable> {
                                 await showDialog<void>(
                                   context: context,
                                   builder: (BuildContext context) {
-                                    int? selectedRadio = 0;
                                     return payments(size);
                                   },
                                 );
                               },
-                        child: Text('ชำระเงิน'))),
+                        child: const Text('ชำระเงิน'))),
                 SizedBox(
                   width: double.infinity,
                   height: size.height * .6,
-                  child: (getSlip.length > 0 &&
-                          getItem.length > 0 &&
+                  child: (getSlip.isNotEmpty &&
+                          getItem.isNotEmpty &&
                           slip(0) != null)
                       ? ListView(
                           children: [
@@ -660,29 +668,29 @@ class _TabletTableState extends State<TabletTable> {
                                               slip(i)['image'],
                                               fit: BoxFit.cover,
                                             )
-                                          : Text('')),
+                                          : const Text('')),
                                   title: Text(slip(i)['name']),
                                   subtitle: Text(slip(i)['price']),
                                   trailing: GestureDetector(
                                     onTap: () async {
                                       await Slip.delete(
                                           u_id: getSlip[i]['u_id']);
-                                      await slipSlect();
+                                      await slipSlect(provider);
                                       await sumCheck(i);
                                     },
 
                                     // print(dSlip(slip(i)['name'])['u_id']),
-                                    child: Icon(
+                                    child: const Icon(
                                       Icons.delete,
                                     ),
                                   )),
                           ],
                         )
-                      : Text(''),
+                      : const Text(''),
                 ),
               ],
             ),
-            Container(
+            SizedBox(
               width: double.infinity,
               height: 50,
               child: TextButton(
@@ -690,13 +698,13 @@ class _TabletTableState extends State<TabletTable> {
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                          title: Text(
+                          title: const Text(
                             'ลบทั้งหมด',
                             style: TextStyle(
                                 color: Colors.red, fontWeight: FontWeight.bold),
                           ),
-                          content:
-                              Text('คุณต้องการลบสินค้าที่เลือกทั้งหมดหรือไม่'),
+                          content: const Text(
+                              'คุณต้องการลบสินค้าที่เลือกทั้งหมดหรือไม่'),
                           actions: [
                             TextButton(
                                 onPressed: () {
@@ -706,7 +714,7 @@ class _TabletTableState extends State<TabletTable> {
                                   });
                                   Navigator.pop(context);
                                 },
-                                child: Text(
+                                child: const Text(
                                   'ลบทั้งหมด',
                                   style: TextStyle(
                                       fontSize: 18, color: Colors.red),
@@ -715,7 +723,7 @@ class _TabletTableState extends State<TabletTable> {
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
-                                child: Text(
+                                child: const Text(
                                   'ยกเลิก',
                                   style: TextStyle(
                                       fontSize: 18, color: Colors.blue),
@@ -723,7 +731,7 @@ class _TabletTableState extends State<TabletTable> {
                           ]),
                     );
                   },
-                  child: Text(
+                  child: const Text(
                     'ลบทั้งหมด',
                     style: TextStyle(
                         color: Colors.red,
@@ -741,7 +749,7 @@ class _TabletTableState extends State<TabletTable> {
     return AlertDialog(
       content: StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
-          return Container(
+          return SizedBox(
             width: size.width * .5,
             height: size.height * .6,
             child: Column(
@@ -764,7 +772,7 @@ class _TabletTableState extends State<TabletTable> {
                   toolbarHeight: 35,
                   elevation: 0,
                   centerTitle: true,
-                  title: Text(
+                  title: const Text(
                     'ชำระเงิน',
                     style: TextStyle(color: Colors.black54, fontSize: 15),
                   ),
@@ -791,13 +799,13 @@ class _TabletTableState extends State<TabletTable> {
                                       },
                                       child: Column(
                                         children: [
-                                          Container(
+                                          SizedBox(
                                             width: 24,
                                             height: 24,
                                             child: Image.asset(
                                                 'assets/icons/dollar.png'),
                                           ),
-                                          Text(
+                                          const Text(
                                             'เงินสด',
                                             style:
                                                 TextStyle(color: Colors.black),
@@ -815,13 +823,13 @@ class _TabletTableState extends State<TabletTable> {
                                       },
                                       child: Column(
                                         children: [
-                                          Container(
+                                          SizedBox(
                                             width: 24,
                                             height: 24,
                                             child: Image.asset(
                                                 'assets/icons/promtpay-.png'),
                                           ),
-                                          Text(
+                                          const Text(
                                             'คิวอาร์โค้ด',
                                             style: TextStyle(
                                                 color: Colors.black,
@@ -834,11 +842,11 @@ class _TabletTableState extends State<TabletTable> {
                             ),
                           ),
                           Expanded(
-                              child: Container(
+                              child: SizedBox(
                             height: double.infinity,
                             child: !prompay
                                 ? Image.memory(base64Decode(prompayImage!))
-                                : Text('สด'),
+                                : const Text('สด'),
                           ))
                         ],
                       )),
@@ -870,7 +878,7 @@ class _TabletTableState extends State<TabletTable> {
                 onLongPress: () => showDialog(
                   context: context,
                   builder: (context) => AlertDialog(
-                    title: Text('ต้องการลบ cate gory?'),
+                    title: const Text('ต้องการลบ cate gory?'),
                     actions: [
                       OutlinedButton(
                           onPressed: () async {
@@ -892,7 +900,7 @@ class _TabletTableState extends State<TabletTable> {
                               Navigator.pop(context);
                               showDialog(
                                 context: context,
-                                builder: (context) => AlertDialog(
+                                builder: (context) => const AlertDialog(
                                   title: Text(
                                     'Category ไม่สามารถน้อยกว่า 1 !',
                                     style: TextStyle(
@@ -902,13 +910,13 @@ class _TabletTableState extends State<TabletTable> {
                               );
                             }
                           },
-                          child: Text(
+                          child: const Text(
                             "ยืนยัน",
                             style: TextStyle(color: Colors.red),
                           )),
                       OutlinedButton(
                           onPressed: () => Navigator.pop(context),
-                          child: Text("ยกเลิก")),
+                          child: const Text("ยกเลิก")),
                     ],
                   ),
                 ),
@@ -940,7 +948,7 @@ class _TabletTableState extends State<TabletTable> {
                       builder: (BuildContext context, StateSetter setState) {
                         return Column(
                           children: List<Widget>.generate(1, (int index) {
-                            return Container(
+                            return SizedBox(
                               width: size.width * .4,
                               height: size.height * .4,
                               child: SingleChildScrollView(
@@ -953,11 +961,11 @@ class _TabletTableState extends State<TabletTable> {
                                         IconButton(
                                             onPressed: () =>
                                                 Navigator.of(context).pop(),
-                                            icon: Icon(Icons.close)),
-                                        Text('เพิ่มกลุ่มสินค้า'),
+                                            icon: const Icon(Icons.close)),
+                                        const Text('เพิ่มกลุ่มสินค้า'),
                                         TextButton(
                                             onPressed: () async {
-                                              if (nameCate.text.length > 0) {
+                                              if (nameCate.text.isNotEmpty) {
                                                 print(nameCate.text);
                                                 sideBar.add({
                                                   "color":
@@ -977,26 +985,26 @@ class _TabletTableState extends State<TabletTable> {
                                                 showDialog(
                                                   context: context,
                                                   builder: (context) =>
-                                                      AlertDialog(
+                                                      const AlertDialog(
                                                           title: Text(
                                                               "โปรดใส่ชื่อ!")),
                                                 );
                                               }
                                             },
-                                            child: Text('บันทึก'))
+                                            child: const Text('บันทึก'))
                                       ],
                                     ),
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text('ชื่อกลุ่มสินค้า'),
+                                        const Text('ชื่อกลุ่มสินค้า'),
                                         SizedBox(
                                           width: 200,
                                           height: 30,
                                           child: TextField(
                                             controller: nameCate,
-                                            decoration: InputDecoration(
+                                            decoration: const InputDecoration(
                                                 border: OutlineInputBorder(
                                               borderSide: BorderSide(
                                                   width: 3,
@@ -1010,7 +1018,7 @@ class _TabletTableState extends State<TabletTable> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text('เลือกสีพื้นหลัง'),
+                                        const Text('เลือกสีพื้นหลัง'),
                                         GestureDetector(
                                           onTap: () => showDialog(
                                               context: context,
@@ -1084,7 +1092,7 @@ class _TabletTableState extends State<TabletTable> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text('เปิดใช้งาน'),
+                                        const Text('เปิดใช้งาน'),
                                         SizedBox(
                                             width: 80,
                                             height: 80,
@@ -1132,16 +1140,14 @@ class _TabletTableState extends State<TabletTable> {
     print('ทำงานงาน');
     if (search.text.length != 0) {
       print(search.text.length);
-      await Future<void>.delayed(Duration(hours: 1));
+      await Future<void>.delayed(const Duration(hours: 1));
     }
-    await Future.delayed(Duration(milliseconds: 482));
+    await Future.delayed(const Duration(milliseconds: 482));
 
     try {
-      var request = await http
-          .post(Uri.parse('http://$config/mmposAPI/items_crud.php'), body: {
-        "action": "GET_ALL",
-        "email": " FirebaseAuth.instance.currentUser!.email"
-      });
+      var request = await http.post(
+          Uri.parse('http://$config/mmposAPI/items_crud.php'),
+          body: {"action": "GET_ALL", "email": provider.email['email']});
       var res = jsonDecode(request.body);
       if (res != getItem) {
         if (provider.item == null) {
@@ -1154,7 +1160,7 @@ class _TabletTableState extends State<TabletTable> {
       }
       // slipCrude
 
-      await slipSlect();
+      await slipSlect(provider);
       await cateSelect(provider);
       // print(res);
       sumCheck(0);
@@ -1163,12 +1169,10 @@ class _TabletTableState extends State<TabletTable> {
     }
   }
 
-  slipSlect() async {
-    var req = await http
-        .post(Uri.parse("http://$config/mmposAPI/slip_crud.php"), body: {
-      "action": "GET_ALL",
-      "email": " FirebaseAuth.instance.currentUser!.email"
-    });
+  slipSlect(provider) async {
+    var req = await http.post(
+        Uri.parse("http://$config/mmposAPI/slip_crud.php"),
+        body: {"action": "GET_ALL", "email": provider.email['email']});
     var resSlip = jsonDecode(req.body);
     if (resSlip != getSlip) {
       setState(() {
@@ -1178,8 +1182,8 @@ class _TabletTableState extends State<TabletTable> {
   }
 
   selectByCate() {
-    if (getCate.length > 0) {
-      if (searcBarcode.text.length > 0) {
+    if (getCate.isNotEmpty) {
+      if (searcBarcode.text.isNotEmpty) {
         if (getItem
             .where((element) => element['items_barcode'] == searcBarcode.text)
             .isNotEmpty) {
@@ -1207,15 +1211,16 @@ class _TabletTableState extends State<TabletTable> {
   FutureBuilder<dynamic> streamData(provider) {
     return FutureBuilder(
         builder: (context, snapshot) => snapshot.hasData
-            ? Center(
+            ? const Center(
                 child: CircularProgressIndicator(),
               )
             : SizedBox(
-                child: getItem.length > 0 && selectByCate().length >= 0
+                child: getItem.isNotEmpty && selectByCate().length >= 0
                     ? GridView.builder(
                         itemCount: selectByCate().length + 1,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 5, childAspectRatio: 0.85),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 5, childAspectRatio: 0.85),
                         itemBuilder: (context, index) => selectByCate()
                                         .length ==
                                     index ||
@@ -1227,10 +1232,10 @@ class _TabletTableState extends State<TabletTable> {
                                     expand: true,
                                     context: context,
                                     backgroundColor: Colors.transparent,
-                                    builder: (context) => MainPage(),
+                                    builder: (context) => const MainPage(),
                                   );
                                 },
-                                child: Card(
+                                child: const Card(
                                   color: Colors.white,
                                   child: Icon(
                                     Icons.add,
@@ -1245,7 +1250,7 @@ class _TabletTableState extends State<TabletTable> {
                                   await Slip.insertU(
                                       name_item: selectByCate()[index]['name'],
                                       sum: selectByCate()[index]['price']);
-                                  await slipSlect();
+                                  await slipSlect(provider);
                                   await sumCheck(index);
                                 },
                                 child: Card(
@@ -1272,7 +1277,7 @@ class _TabletTableState extends State<TabletTable> {
                                                       ['image'],
                                                   fit: BoxFit.cover,
                                                 )
-                                              : Text(''),
+                                              : const Text(''),
                                         ),
                                       ),
                                       Expanded(
@@ -1290,7 +1295,7 @@ class _TabletTableState extends State<TabletTable> {
                                 ),
                               ),
                       )
-                    : Center(child: Text('')),
+                    : const Center(child: Text('')),
               ));
   }
 
@@ -1345,13 +1350,13 @@ class _TabletTableState extends State<TabletTable> {
     try {
       var response = await http.post(Uri.parse(cateLink), body: {
         "action": "GET_ALL",
-        "email": " FirebaseAuth.instance.currentUser!.email",
+        "email": provider.email['email'],
         "that_is": "cate"
       });
       if (response.statusCode == 200) {
         // print(response.body);
         var res = jsonDecode(response.body);
-        if (res.length > 0) {
+        if (res.isNotEmpty) {
           setState(() {
             getCate = res;
             provider.getCate(getCate);
@@ -1383,7 +1388,7 @@ class _TabletTableState extends State<TabletTable> {
         content: SingleChildScrollView(
             child: Column(
           children: [
-            Text('ค้นหาด้วยรหัสสินค้า'),
+            const Text('ค้นหาด้วยรหัสสินค้า'),
             TextField(
               controller: searcBarcode,
               keyboardType: TextInputType.number,
@@ -1392,7 +1397,8 @@ class _TabletTableState extends State<TabletTable> {
         )),
         actions: [
           OutlinedButton(
-              onPressed: () => Navigator.pop(context), child: Text('เรียบร้อย'))
+              onPressed: () => Navigator.pop(context),
+              child: const Text('เรียบร้อย'))
         ],
       ),
     );
@@ -1405,7 +1411,7 @@ class _TabletTableState extends State<TabletTable> {
       context: context,
       builder: (context) => AlertDialog(
         content: StatefulBuilder(
-          builder: (context, setState) => Container(
+          builder: (context, setState) => SizedBox(
             width: size.width * .4,
             height: size.height * .6,
             child: SingleChildScrollView(
@@ -1414,7 +1420,7 @@ class _TabletTableState extends State<TabletTable> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.arrow_back_ios,
                       color: Colors.green,
                     ),
@@ -1469,15 +1475,15 @@ class _TabletTableState extends State<TabletTable> {
                   height: 2,
                 ),
                 TextField(
-                  decoration: InputDecoration(hintText: "จำนวนเงิน"),
+                  decoration: const InputDecoration(hintText: "จำนวนเงิน"),
                   controller: sell,
                   keyboardType: TextInputType.number,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 40,
                 ),
                 Container(
-                  padding: EdgeInsets.all(2),
+                  padding: const EdgeInsets.all(2),
                   decoration: BoxDecoration(
                       color: Colors.grey.shade200,
                       borderRadius: BorderRadius.circular(10)),
@@ -1497,7 +1503,7 @@ class _TabletTableState extends State<TabletTable> {
                                   color: amount
                                       ? Colors.white
                                       : Colors.transparent),
-                              child: Center(child: Text('Amount')),
+                              child: const Center(child: Text('Amount')),
                             ),
                           )),
                       Expanded(
@@ -1513,7 +1519,7 @@ class _TabletTableState extends State<TabletTable> {
                                       ? Colors.white
                                       : Colors.transparent,
                                 ),
-                                child: Center(child: Text('%'))),
+                                child: const Center(child: Text('%'))),
                           )),
                     ],
                   ),
@@ -1530,9 +1536,9 @@ class _TabletTableState extends State<TabletTable> {
                             setState(
                               () => amount = false,
                             );
-                            sell.value = TextEditingValue(text: "23");
+                            sell.value = const TextEditingValue(text: "23");
                           },
-                          child: Card(
+                          child: const Card(
                             color: Colors.redAccent,
                             child: Center(child: Text('ลด10%')),
                           ),
@@ -1542,9 +1548,9 @@ class _TabletTableState extends State<TabletTable> {
                             setState(
                               () => amount = false,
                             );
-                            sell.value = TextEditingValue(text: "10");
+                            sell.value = const TextEditingValue(text: "10");
                           },
-                          child: Card(
+                          child: const Card(
                             color: Colors.redAccent,
                             child: Center(child: Text('ลด10%')),
                           ),
@@ -1554,9 +1560,9 @@ class _TabletTableState extends State<TabletTable> {
                             setState(
                               () => amount = false,
                             );
-                            sell.value = TextEditingValue(text: "15");
+                            sell.value = const TextEditingValue(text: "15");
                           },
-                          child: Card(
+                          child: const Card(
                             color: Colors.redAccent,
                             child: Center(child: Text('ลด15%')),
                           ),
@@ -1566,9 +1572,9 @@ class _TabletTableState extends State<TabletTable> {
                             setState(
                               () => amount = false,
                             );
-                            sell.value = TextEditingValue(text: "20");
+                            sell.value = const TextEditingValue(text: "20");
                           },
-                          child: Card(
+                          child: const Card(
                             color: Colors.redAccent,
                             child: Center(child: Text('ลด20%')),
                           ),
@@ -1578,9 +1584,9 @@ class _TabletTableState extends State<TabletTable> {
                             setState(
                               () => amount = false,
                             );
-                            sell.value = TextEditingValue(text: "50");
+                            sell.value = const TextEditingValue(text: "50");
                           },
-                          child: Card(
+                          child: const Card(
                             color: Colors.redAccent,
                             child: Center(child: Text('ลด50%')),
                           ),
@@ -1593,14 +1599,15 @@ class _TabletTableState extends State<TabletTable> {
         ),
         actions: [
           OutlinedButton(
-              onPressed: () => Navigator.pop(context), child: Text('เรียบร้อย'))
+              onPressed: () => Navigator.pop(context),
+              child: const Text('เรียบร้อย'))
         ],
       ),
     );
   }
 
   selled() {
-    if (amount && sell.text.length > 0 && int.parse(sell.text) > 0) {
+    if (amount && sell.text.isNotEmpty && int.parse(sell.text) > 0) {
       if ((priceSum - int.parse(sell.text)) >= 0) {
         setState(() {
           err = false;
@@ -1612,7 +1619,7 @@ class _TabletTableState extends State<TabletTable> {
       });
       return "ส่วนลดมีค่ามากกว่าสินค้า!";
     }
-    if (!amount && sell.text.length > 0 && int.parse(sell.text) > 0) {
+    if (!amount && sell.text.isNotEmpty && int.parse(sell.text) > 0) {
       if (int.parse(sell.text) <= 100) {
         setState(() {
           err = false;
@@ -1636,24 +1643,24 @@ class _TabletTableState extends State<TabletTable> {
       context: context,
       builder: (context) => AlertDialog(
         content: SingleChildScrollView(
-            child: Container(
+            child: SizedBox(
           width: MediaQuery.of(context).size.width * .6,
           height: MediaQuery.of(context).size.height * .6,
           child: Column(
             children: [
-              Container(
+              SizedBox(
                 height: 60,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
+                    SizedBox(
                         width: 60,
                         height: double.infinity,
                         child: InkWell(
                             onTap: () => Navigator.pop(context),
-                            child: Center(child: Text('ปิด')))),
-                    Text('ค้นหาสมาชิก'),
-                    Container(
+                            child: const Center(child: Text('ปิด')))),
+                    const Text('ค้นหาสมาชิก'),
+                    SizedBox(
                         width: 60,
                         height: double.infinity,
                         child: InkWell(
@@ -1661,18 +1668,18 @@ class _TabletTableState extends State<TabletTable> {
                               Navigator.pop(context);
                               await dialogAddCustomer(context);
                             },
-                            child: Icon(Icons.add)))
+                            child: const Icon(Icons.add)))
                   ],
                 ),
               ),
               Container(
                 child: Row(
                   children: [
-                    Icon(Icons.search),
+                    const Icon(Icons.search),
                     Expanded(
                       child: SearchField(
                         controller: search,
-                        searchInputDecoration: InputDecoration(
+                        searchInputDecoration: const InputDecoration(
                           border: InputBorder.none,
                           icon: Icon(Icons.search),
                           hintText: 'ค้นหาสินค้าทั้งหมด...',
@@ -1696,7 +1703,7 @@ class _TabletTableState extends State<TabletTable> {
                             .toList(),
                       ),
                     ),
-                    Icon(Icons.qr_code)
+                    const Icon(Icons.qr_code)
                   ],
                 ),
               ),
@@ -1709,8 +1716,8 @@ class _TabletTableState extends State<TabletTable> {
                         height: 100,
                         color: Colors.red,
                       ),
-                      title: Text("name"),
-                      trailing: Text("0985757375"),
+                      title: const Text("name"),
+                      trailing: const Text("0985757375"),
                     )
                   ],
                 ),
@@ -1744,27 +1751,27 @@ class _TabletTableState extends State<TabletTable> {
           builder: (context, setState) => SingleChildScrollView(
             child: Column(
               children: [
-                Container(
+                SizedBox(
                   width: double.infinity,
                   height: 60,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Icon(Icons.close),
-                      Text('เพิ่มข้อมูลลูกค้า'),
-                      Icon(
+                      const Icon(Icons.close),
+                      const Text('เพิ่มข้อมูลลูกค้า'),
+                      const Icon(
                         Icons.close,
                         color: Colors.white,
                       ),
                     ],
                   ),
                 ),
-                Text('ชื่อลูกค้า'),
-                TextField(
+                const Text('ชื่อลูกค้า'),
+                const TextField(
                   decoration: InputDecoration(hintText: "กรอกชื่อ"),
                 ),
-                Text('นามสกุลลูกค้า'),
-                Text('เพศ'),
+                const Text('นามสกุลลูกค้า'),
+                const Text('เพศ'),
                 Row(
                   children: [
                     for (int i = 0; i < sex.length; i++)
@@ -1787,16 +1794,16 @@ class _TabletTableState extends State<TabletTable> {
                       ),
                   ],
                 ),
-                TextField(
+                const TextField(
                   decoration: InputDecoration(hintText: "กรอกนามสกุล"),
                 ),
-                Text("เบอร์โทร"),
-                TextField(
+                const Text("เบอร์โทร"),
+                const TextField(
                   decoration: InputDecoration(hintText: "ex.0982344***"),
                 ),
                 InkWell(
                   onTap: () => dialogGroup(context),
-                  child: SizedBox(
+                  child: const SizedBox(
                     width: double.infinity,
                     height: 60,
                     child: Card(
@@ -1818,7 +1825,7 @@ class _TabletTableState extends State<TabletTable> {
           contentPadding: EdgeInsets.zero,
           content: StatefulBuilder(
             builder: (context, setState) => Container(
-              child: Container(
+              child: SizedBox(
                 width: 300,
                 height: MediaQuery.of(context).size.height * .6,
                 child: Column(
@@ -1826,12 +1833,12 @@ class _TabletTableState extends State<TabletTable> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.add,
                           color: Colors.white,
                         ),
-                        Text("เลือกกลุ่มลูกค้า"),
-                        Icon(Icons.add)
+                        const Text("เลือกกลุ่มลูกค้า"),
+                        const Icon(Icons.add)
                       ],
                     ),
                     Expanded(
@@ -1848,7 +1855,7 @@ class _TabletTableState extends State<TabletTable> {
                                     width: 50,
                                     height: 50,
                                     color: Colors.red,
-                                    child: Center(
+                                    child: const Center(
                                       child: Text(
                                         "N",
                                         style: TextStyle(fontSize: 30),
@@ -1856,7 +1863,7 @@ class _TabletTableState extends State<TabletTable> {
                                     ),
                                   ),
                                 ),
-                                title: Text("name"),
+                                title: const Text("name"),
                               ),
                             ),
                           )
@@ -1871,13 +1878,14 @@ class _TabletTableState extends State<TabletTable> {
       );
   duration() async* {
     while (onStream) {
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
       yield '';
     }
   }
 
   Future<dynamic> tableSelect(BuildContext context) {
     TextEditingController tableName = TextEditingController();
+    Store provider = context.watch<Store>();
     return showDialog(
         context: context,
         builder: (context) => StatefulBuilder(
@@ -1891,18 +1899,18 @@ class _TabletTableState extends State<TabletTable> {
                     OutlinedButton(
                         onPressed: () async {
                           await TableAPI.insertU(name: tableName.text);
-                          await selectTable();
+                          await selectTable(provider);
                           Navigator.pop(context);
                         },
-                        child: Text('เพิ่มโต๊ะ'))
+                        child: const Text('เพิ่มโต๊ะ'))
                   ],
                 )),
               ),
             ));
   }
 
-  selectTable() async {
-    table = await TableAPI.select();
+  selectTable(Store provider) async {
+    table = await TableAPI.select(provider.email['email']);
     setState(() {
       table = table;
     });

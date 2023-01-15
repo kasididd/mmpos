@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:mmpos/provider/store.dart';
+import 'package:provider/provider.dart';
 
 class AccountSetting extends StatefulWidget {
   const AccountSetting({super.key});
@@ -12,42 +14,46 @@ class AccountSetting extends StatefulWidget {
 class _AccountSettingState extends State<AccountSetting> {
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    Store provider = context.watch<Store>();
     return Scaffold(
       //
       backgroundColor: Colors.grey.shade200,
       //
 
       //Appbar Start
-      appBar: AppBar(
-        //
-        backgroundColor: Colors.white,
-        toolbarHeight: 40,
-        //
-        leading: Row(
-          children: [
-            TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.arrow_back_ios_new,
-                      color: Colors.red,
-                      size: 20,
-                    ),
-                  ],
-                ))
-          ],
-        ),
-        //
-        title: Text(
-          'บัญชีร้านค้า',
-          style: TextStyle(color: Colors.black54, fontSize: 17),
-        ),
-        centerTitle: true,
-        //
-      ),
+      appBar: size.width > size.height
+          ? null
+          : AppBar(
+              //
+              backgroundColor: Colors.white,
+              toolbarHeight: 40,
+              //
+              leading: Row(
+                children: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.arrow_back_ios_new,
+                            color: Colors.red,
+                            size: 20,
+                          ),
+                        ],
+                      ))
+                ],
+              ),
+              //
+              title: Text(
+                'บัญชีร้านค้า',
+                style: TextStyle(color: Colors.black54, fontSize: 17),
+              ),
+              centerTitle: true,
+              //
+            ),
       //Appbar Stop
 
       //
@@ -85,7 +91,7 @@ class _AccountSettingState extends State<AccountSetting> {
                       style: TextStyle(fontSize: 20),
                     ),
                   ),
-                  Text('Email'),
+                  Text(provider.email['email']),
                   Text('**************')
                 ],
               ),
@@ -103,7 +109,9 @@ class _AccountSettingState extends State<AccountSetting> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 TextButton.icon(
-                  onPressed: () {},
+                  onPressed: () async {
+                    await provider.hiveLogout();
+                  },
                   icon: Icon(
                     Icons.logout_outlined,
                     color: Colors.red,

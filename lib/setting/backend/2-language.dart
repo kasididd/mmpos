@@ -12,42 +12,45 @@ class LanguageSetting extends StatefulWidget {
 class _LanguageSettingState extends State<LanguageSetting> {
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       //
       backgroundColor: Colors.grey.shade200,
       //
 
       //Appbar Start
-      appBar: AppBar(
-        //
-        backgroundColor: Colors.white,
-        toolbarHeight: 40,
-        //
-        leading: Row(
-          children: [
-            TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.arrow_back_ios_new,
-                      color: Colors.red,
-                      size: 20,
-                    ),
-                  ],
-                ))
-          ],
-        ),
-        //
-        title: Text(
-          'ตั้งค่าภาษา',
-          style: TextStyle(color: Colors.black54, fontSize: 17),
-        ),
-        centerTitle: true,
-        //
-      ),
+      appBar: size.width > size.height
+          ? null
+          : AppBar(
+              //
+              backgroundColor: Colors.white,
+              toolbarHeight: 40,
+              //
+              leading: Row(
+                children: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.arrow_back_ios_new,
+                            color: Colors.red,
+                            size: 20,
+                          ),
+                        ],
+                      ))
+                ],
+              ),
+              //
+              title: Text(
+                'ตั้งค่าภาษา',
+                style: TextStyle(color: Colors.black54, fontSize: 17),
+              ),
+              centerTitle: true,
+              //
+            ),
       //Appbar Stop
 
       body: Column(

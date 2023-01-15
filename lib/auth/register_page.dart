@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:mmpos/API/service_api.dart';
 import 'package:mmpos/auth/login_page.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -11,6 +12,20 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  TextEditingController email = TextEditingController();
+  TextEditingController tel = TextEditingController();
+  TextEditingController password = TextEditingController();
+  TextEditingController passwordC = TextEditingController();
+  @override
+  void dispose() {
+    email.dispose();
+    tel.dispose();
+    password.dispose();
+    passwordC.dispose();
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,6 +75,8 @@ class _RegisterPageState extends State<RegisterPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: TextField(
+                  controller: email,
+                  keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.white),
@@ -85,6 +102,9 @@ class _RegisterPageState extends State<RegisterPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: TextField(
+                  controller: tel,
+                  maxLength: 10,
+                  keyboardType: TextInputType.phone,
                   decoration: InputDecoration(
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.white),
@@ -110,6 +130,9 @@ class _RegisterPageState extends State<RegisterPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: TextField(
+                  controller: password,
+                  keyboardType: TextInputType.visiblePassword,
+                  obscureText: true,
                   decoration: InputDecoration(
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.white),
@@ -135,6 +158,9 @@ class _RegisterPageState extends State<RegisterPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: TextField(
+                  obscureText: true,
+                  controller: passwordC,
+                  keyboardType: TextInputType.visiblePassword,
                   decoration: InputDecoration(
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.white),
@@ -171,13 +197,31 @@ class _RegisterPageState extends State<RegisterPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: GestureDetector(
-                  onTap: () {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => LoginPage(),
-                        ));
-                    print('Login');
+                  onTap: () async {
+                    if (email.text.isNotEmpty &&
+                        password.text.isNotEmpty &&
+                        tel.text.isNotEmpty &&
+                        password.text == passwordC.text) {
+                      if (await UserStore.insert(
+                              email: email.text.trim(),
+                              password: password.text.trim(),
+                              tel_promt: tel.text.trim()) ==
+                          "no") {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text(
+                                "Email: ${email.text} ถูกใช้งานไปแล้วโปรใช้Emailอื่น"),
+                          ),
+                        );
+                      } else {
+                        await Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => LoginPage(),
+                            ));
+                      }
+                    }
                   },
                   child: Container(
                     padding: EdgeInsets.all(20),
@@ -187,7 +231,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     child: Center(
                       child: Text(
-                        'เข้าสู่ระบบ',
+                        'สมัคร',
                         style: TextStyle(
                           color: Colors.white,
                           // fontWeight: FontWeight.bold,

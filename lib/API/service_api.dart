@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -425,11 +426,9 @@ class TableAPI {
     }
   }
 
-  static select() async {
-    var response = await http.post(Uri.parse(tableLink), body: {
-      "action": "GET_ALL",
-      "email": FirebaseAuth.instance.currentUser!.email
-    });
+  static select(email) async {
+    var response = await http.post(Uri.parse(tableLink),
+        body: {"action": "GET_ALL", "email": email});
     if (response.statusCode == 200) {
       // print(response.body);
 
@@ -461,6 +460,8 @@ class TableAPI {
 
 class UserStore {
   static String userLink = "http://$config/mmposAPI/user.php";
+  static String userLoginLink = "http://$config/mmposAPI/login.php";
+  static String tokenLink = "http://$config/mmposAPI/change_password/token.php";
   static Future update({
     required String image,
     required String type_store,
@@ -513,25 +514,78 @@ class UserStore {
     }
   }
 
-  static insert({required String email}) async {
-    var response = await http
-        .post(Uri.parse(userLink), body: {"action": "INSERT", "email": email});
-    if (response.statusCode == 200) {
-      // print(response.body);
-
-      return print(jsonDecode(response.body));
-    }
-  }
-
-  static select() async {
+  static insert({
+    required String email,
+    required String password,
+    required String tel_promt,
+  }) async {
     var response = await http.post(Uri.parse(userLink), body: {
-      "action": "SELECT",
-      "email": FirebaseAuth.instance.currentUser!.email
+      "action": "INSERT",
+      "email": email,
+      "tel_promt": tel_promt,
+      "password": password
     });
     if (response.statusCode == 200) {
       // print(response.body);
 
-      return jsonDecode(response.body);
+      return response.body;
+    }
+  }
+
+  static login({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      var response = await http.post(Uri.parse(userLoginLink), body: {
+        "action": "SELECT",
+        "email": email,
+        "password": password,
+      });
+      if (response.statusCode == 200) {
+        // print(response.body);
+
+        return jsonDecode(response.body);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  static resetPassword({
+    required String email,
+  }) async {
+    String token = Random().nextInt(1000000).toString();
+    try {
+      var response = await http.post(Uri.parse(tokenLink), body: {
+        "email": email,
+        "token": token,
+      });
+      if (response.statusCode == 200) {
+        // print(response.body);
+        final url = Uri.parse("https://api.emailjs.com/api/v1.0/email/send");
+        const service_id = "service_lgmfds4";
+        const template_id = "template_0vcwepe";
+        const user_id = "5Gjw1_A36I08CT46m";
+        String to_email = "kasidid.wan@gmail.com";
+        String link =
+            "http://$config/mmposAPI/change_password/?token=$token&email=$email";
+        var res = await http.post(url,
+            headers: {
+              'origin': 'http:/localhost',
+              'Content-Type': 'application/json'
+            },
+            body: json.encode({
+              "service_id": service_id,
+              "template_id": template_id,
+              "user_id": user_id,
+              "template_params": {"to_email": to_email, "link": link}
+            }));
+        print(res.body);
+        return response.body;
+      }
+    } catch (e) {
+      print(e);
     }
   }
 

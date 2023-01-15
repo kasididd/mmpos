@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:mmpos/provider/store.dart';
 import 'package:mmpos/widget/drawer_widget.dart';
+import 'package:provider/provider.dart';
 
 class DollarScreen extends StatefulWidget {
   const DollarScreen({super.key});
@@ -13,11 +15,14 @@ class DollarScreen extends StatefulWidget {
 class _DollarScreenState extends State<DollarScreen> {
   @override
   Widget build(BuildContext context) {
+    Store provider = context.watch<Store>();
     return Scaffold(
       //
       backgroundColor: Colors.grey.shade200,
       //
-      drawer: DrawerWidget(),
+      drawer: DrawerWidget(
+        provider: provider,
+      ),
       //Appbar Start
       appBar: AppBar(
         //

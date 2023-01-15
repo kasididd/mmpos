@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:mmpos/API/service_api.dart';
 import 'package:mmpos/auth/login_page.dart';
 import 'package:mmpos/auth/register_page.dart';
 
@@ -12,6 +14,14 @@ class ForgotPage extends StatefulWidget {
 }
 
 class _ForgotPageState extends State<ForgotPage> {
+  TextEditingController email = TextEditingController();
+  @override
+  void dispose() {
+    email.dispose();
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +34,7 @@ class _ForgotPageState extends State<ForgotPage> {
               Center(
                 child: Column(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.point_of_sale,
                       color: Colors.red,
                       size: 120,
@@ -34,7 +44,7 @@ class _ForgotPageState extends State<ForgotPage> {
               ),
               //Logo Stop
 
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
 
@@ -43,7 +53,7 @@ class _ForgotPageState extends State<ForgotPage> {
               Center(
                   child: Column(
                 children: [
-                  Text(
+                  const Text(
                     'ลืมรหัสผ่าน',
                     style: TextStyle(fontSize: 35),
                   ),
@@ -52,7 +62,7 @@ class _ForgotPageState extends State<ForgotPage> {
 
               //Text Stop
 
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
 
@@ -61,13 +71,15 @@ class _ForgotPageState extends State<ForgotPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: TextField(
+                  controller: email,
+                  keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                       enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white),
+                        borderSide: const BorderSide(color: Colors.white),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.red),
+                          borderSide: const BorderSide(color: Colors.red),
                           borderRadius: BorderRadius.circular(12)),
                       hintText: 'อีเมล',
                       fillColor: Colors.grey[200],
@@ -77,7 +89,7 @@ class _ForgotPageState extends State<ForgotPage> {
 
               //Email Stop
 
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
 
@@ -86,21 +98,21 @@ class _ForgotPageState extends State<ForgotPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: GestureDetector(
-                  onTap: () {
+                  onTap: () async {
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ForgotPage(),
+                          builder: (context) => const ForgotPage(),
                         ));
-                    print('Reset');
+                    UserStore.resetPassword(email: email.text.trim());
                   },
                   child: Container(
-                    padding: EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 255, 87, 75),
+                      color: const Color.fromARGB(255, 255, 87, 75),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Center(
+                    child: const Center(
                       child: Text(
                         'ส่งคำขอรีรหัสผ่าน',
                         style: TextStyle(
@@ -130,18 +142,18 @@ class _ForgotPageState extends State<ForgotPage> {
                             Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => LoginPage(),
+                                  builder: (context) => const LoginPage(),
                                 ));
                             print('Back');
                           },
                           child: Row(
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.arrow_back_ios_new,
                                 color: Colors.red,
                                 size: 15,
                               ),
-                              Text(
+                              const Text(
                                 'กลับเข้าสู่ระบบ',
                                 style: TextStyle(color: Colors.black),
                               )

@@ -80,7 +80,9 @@ class _PhoneTableState extends State<PhoneTable> {
       //
       backgroundColor: Colors.grey.shade200,
       //
-      drawer: DrawerWidget(),
+      drawer: DrawerWidget(
+        provider: provider,
+      ),
       //Appbar Start
       appBar: AppBar(
         //
@@ -177,7 +179,7 @@ class _PhoneTableState extends State<PhoneTable> {
                         primary: Colors.red.shade100,
                         side: BorderSide(color: Colors.red)),
                     onPressed: () async {
-                      await selectTable();
+                      await selectTable(provider);
                       showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
@@ -286,6 +288,7 @@ class _PhoneTableState extends State<PhoneTable> {
   }
 
   Future<dynamic> tableSelect(BuildContext context) {
+    Store provider = context.watch<Store>();
     TextEditingController tableName = TextEditingController();
     return showDialog(
         context: context,
@@ -300,7 +303,7 @@ class _PhoneTableState extends State<PhoneTable> {
                     OutlinedButton(
                         onPressed: () async {
                           await TableAPI.insertU(name: tableName.text);
-                          await selectTable();
+                          await selectTable(provider);
                           Navigator.pop(context);
                         },
                         child: Text('เพิ่มโต๊ะ'))
@@ -1656,8 +1659,8 @@ class _PhoneTableState extends State<PhoneTable> {
     }
   }
 
-  selectTable() async {
-    table = await TableAPI.select();
+  selectTable(Store provider) async {
+    table = await TableAPI.select(provider.email['email']);
     setState(() {
       table = table;
     });

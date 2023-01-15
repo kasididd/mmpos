@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mmpos/layout/phone.dart';
 import 'package:mmpos/layout/tablet.dart';
+import 'package:mmpos/provider/store.dart';
 import 'package:mmpos/screen/1-bill.dart';
 import 'package:mmpos/screen/2-dashboard.dart';
 import 'package:mmpos/screen/3-stock.dart';
@@ -10,12 +11,12 @@ import 'package:mmpos/screen/5-all_stock.dart';
 import 'package:mmpos/screen/6-dollar.dart';
 import 'package:mmpos/setting/layout/setting_tablet.dart';
 import 'package:mmpos/setting/layout/settint_phone.dart';
+import 'package:provider/provider.dart';
 import '../main.dart';
 
 class DrawerWidget extends StatefulWidget {
-  const DrawerWidget({
-    super.key,
-  });
+  const DrawerWidget({super.key, required this.provider});
+  final Store provider;
   @override
   State<DrawerWidget> createState() => _DrawerWidgetState();
 }
@@ -94,7 +95,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                       //
                       children: [
                         Text(
-                          'test@gmail.com',
+                          widget.provider.email['email'],
                           style: TextStyle(fontSize: 15),
                         ),
                       ],

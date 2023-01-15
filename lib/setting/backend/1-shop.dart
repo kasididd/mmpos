@@ -6,12 +6,14 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mmpos/provider/store.dart';
 import 'package:mmpos/src/round/round_setting.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class ShopSetting extends StatefulWidget {
-  const ShopSetting({super.key});
-
+  const ShopSetting({
+    super.key,
+  });
   @override
   State<ShopSetting> createState() => _ShopSettingState();
 }
@@ -29,42 +31,46 @@ class _ShopSettingState extends State<ShopSetting> {
   //
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       //
       backgroundColor: Colors.grey.shade200,
       //
 
       //Appbar Start
-      appBar: AppBar(
-        //
-        backgroundColor: Colors.white,
-        toolbarHeight: 40,
-        //
-        leading: Row(
-          children: [
-            TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.arrow_back_ios_new,
-                      color: Colors.red,
-                      size: 20,
-                    ),
-                  ],
-                ))
-          ],
-        ),
-        //
-        title: Text(
-          'ตั้งค่าร้านค้า',
-          style: TextStyle(color: Colors.black54, fontSize: 17),
-        ),
-        centerTitle: true,
-        //
-      ),
+      appBar: size.width > size.height
+          ? null
+          : AppBar(
+              //
+              backgroundColor: Colors.white,
+              toolbarHeight: 40,
+              //
+              leading: Row(
+                children: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.arrow_back_ios_new,
+                            color: Colors.red,
+                            size: 20,
+                          ),
+                        ],
+                      ))
+                ],
+              ),
+              //
+              title: Text(
+                'ตั้งค่าร้านค้า',
+                style: TextStyle(color: Colors.black54, fontSize: 17),
+              ),
+              centerTitle: true,
+              //
+            ),
       //Appbar Stop
 
       //Body Start

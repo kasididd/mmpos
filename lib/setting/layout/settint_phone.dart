@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:mmpos/provider/store.dart';
 import 'package:mmpos/setting/backend/1-shop.dart';
 import 'package:mmpos/setting/backend/11-member.dart';
 import 'package:mmpos/setting/backend/12-contact.dart';
@@ -14,6 +13,7 @@ import 'package:mmpos/setting/backend/7-display.dart';
 import 'package:mmpos/setting/backend/8-user.dart';
 import 'package:mmpos/setting/backend/9-backup.dart';
 import 'package:mmpos/widget/drawer_widget.dart';
+import 'package:provider/provider.dart';
 
 class PhoneSettingLayout extends StatefulWidget {
   const PhoneSettingLayout({super.key});
@@ -27,34 +27,40 @@ class _PhoneSettingLayoutState extends State<PhoneSettingLayout> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    Store provider = context.watch<Store>();
     return Scaffold(
       //
       backgroundColor: Colors.grey.shade200,
       //
-      drawer: DrawerWidget(),
-      //Appbar Start
-      appBar: AppBar(
-        //
-        backgroundColor: Colors.white,
-        toolbarHeight: 40,
-        //
-        leading: Builder(
-          builder: (context) => // Ensure Scaffold is in context
-              IconButton(
-                  icon: Icon(
-                    Icons.menu,
-                    color: Colors.red,
-                  ),
-                  onPressed: () => Scaffold.of(context).openDrawer()),
-        ),
-        //
-        title: Text(
-          'การตั้งค่า',
-          style: TextStyle(color: Colors.black54, fontSize: 17),
-        ),
-        centerTitle: true,
-        //
+      drawer: DrawerWidget(
+        provider: provider,
       ),
+      //Appbar Start
+      appBar: size.width > size.height
+          ? null
+          : AppBar(
+              //
+              backgroundColor: Colors.white,
+              toolbarHeight: 40,
+              //
+              leading: Builder(
+                builder: (context) => // Ensure Scaffold is in context
+                    IconButton(
+                        icon: Icon(
+                          Icons.menu,
+                          color: Colors.red,
+                        ),
+                        onPressed: () => Scaffold.of(context).openDrawer()),
+              ),
+              //
+              title: Text(
+                'การตั้งค่า',
+                style: TextStyle(color: Colors.black54, fontSize: 17),
+              ),
+              centerTitle: true,
+              //
+            ),
       //Appbar Stop
 
       body: SingleChildScrollView(
