@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:mmpos/API/service_api.dart';
 import 'package:mmpos/page/2-main_page.dart';
 import 'package:mmpos/provider/store.dart';
+import 'package:mmpos/screen/7_product_screen.dart';
 import 'package:mmpos/src/add-product.dart';
 import 'package:mmpos/widget/drawer_widget.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -900,7 +901,9 @@ class _TabletTableState extends State<TabletTable> {
                                 }
                               });
                               await Cate.delete(
-                                  u_id: getCate[i]['u_id'], that_is: "cate");
+                                  provider: provider,
+                                  u_id: getCate[i]['u_id'],
+                                  that_is: "cate");
                               await cateSelect(provider);
                               Navigator.pop(context);
                             } else {
@@ -1239,7 +1242,7 @@ class _TabletTableState extends State<TabletTable> {
                                     expand: true,
                                     context: context,
                                     backgroundColor: Colors.transparent,
-                                    builder: (context) => const ProductAdd(),
+                                    builder: (context) => const ProductScreen(),
                                   );
                                 },
                                 child: const Card(

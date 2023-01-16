@@ -182,43 +182,40 @@ class _LoginPageState extends State<LoginPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: GestureDetector(
-                  onTap: () {},
-                  child: GestureDetector(
-                    onTap: () async {
-                      List res = await UserStore.login(
-                          email: _emailController.text.trim(),
-                          password: _passwordController.text.trim());
-                      if (res.isEmpty) {
-                        print('รหัสไม่ถูก');
-                        await Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const WelcomePage(),
-                            ));
-                      } else {
-                        await provider.hiveLogin(res[0]);
-                        print(await provider.email);
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const WelcomePage(),
-                            ));
-                      }
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 255, 87, 75),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Center(
-                        child: Text(
-                          'เข้าสู่ระบบ',
-                          style: TextStyle(
-                            color: Colors.white,
-                            // fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
+                  onTap: () async {
+                    List res = await UserStore.login(
+                        email: _emailController.text.trim(),
+                        password: _passwordController.text.trim());
+                    if (res.isEmpty) {
+                      print('รหัสไม่ถูก');
+                      await Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const WelcomePage(),
+                          ));
+                    } else {
+                      await provider.hiveLogin(res[0]);
+                      print(await provider.email);
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const WelcomePage(),
+                          ));
+                    }
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 255, 87, 75),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'เข้าสู่ระบบ',
+                        style: TextStyle(
+                          color: Colors.white,
+                          // fontWeight: FontWeight.bold,
+                          fontSize: 18,
                         ),
                       ),
                     ),

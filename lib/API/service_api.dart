@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:pdf/widgets.dart';
 
 import '../provider/store.dart';
 
@@ -75,7 +76,9 @@ Future getById(String id) async {
 
 class GetAPI {
   // promtpay
-  static genQrProm({required name}) async {
+  static genQrProm({
+    required name,
+  }) async {
     var response = await http.post(
         Uri.parse(
           'http://$config/mmposAPI/PromptPay-QR-generator-master/test.php',
@@ -92,37 +95,41 @@ class GetAPI {
 }
 
 class DataBase {
-  static Future insertU({
-    required String name,
-    required String image,
-    required String price,
-    required String items_barcode,
-    required String category,
-    required String type,
-    required String weight,
-    required String check_list,
-    required String is_use,
-    required String is_show,
-    required String cost,
-    required String quantity,
-  }) async {
+  static Future insertU(
+      {required String name,
+      required String image,
+      required String price,
+      required String items_barcode,
+      required String category,
+      required String type,
+      required String weight,
+      required String check_list,
+      required String is_use,
+      required String is_show,
+      required String cost,
+      required String quantity,
+      required Store provider}) async {
     // String list = check_list.map((e) => e['checkIn']).toList().join();
-    var response = await http.post(Uri.parse(dblink), body: {
-      "action": "INSERT",
-      "name": name,
-      "image": image,
-      "price": price,
-      "items_barcode": items_barcode,
-      "category": category,
-      "type": type,
-      "weight": weight,
-      "check_list": check_list,
-      "is_use": is_use,
-      "is_show": is_show,
-      "cost": cost,
-      "quantity": quantity,
-      "email": FirebaseAuth.instance.currentUser!.email
-    });
+    var response = await http.post(
+        Uri.parse(
+          dblink,
+        ),
+        body: {
+          "action": "INSERT",
+          "name": name,
+          "image": image,
+          "price": price,
+          "items_barcode": items_barcode,
+          "category": category,
+          "type": type,
+          "weight": weight,
+          "check_list": check_list,
+          "is_use": is_use,
+          "is_show": is_show,
+          "cost": cost,
+          "quantity": quantity,
+          "email": provider.email['email']
+        });
     if (response.statusCode == 200) {
       print(response.body);
 
@@ -321,14 +328,12 @@ class Cate {
     }
   }
 
-  static delete({
-    required u_id,
-    required String that_is,
-  }) async {
+  static delete(
+      {required u_id, required String that_is, required Store provider}) async {
     var response = await http.post(Uri.parse(cateLink), body: {
       "action": "DELETE",
       "u_id": u_id,
-      "email": FirebaseAuth.instance.currentUser!.email,
+      "email": provider.email['email'],
       "that_is": that_is
     });
     if (response.statusCode == 200) {
@@ -651,5 +656,13 @@ class myDecoder {
     // print("get   $get");
     return Color.fromARGB(
         255, int.parse(get[0]), int.parse(get[1]), int.parse(get[2]));
+  }
+}
+
+class Utility {
+  static phonCheck(context) {
+    Size size = MediaQuery.of(context).size;
+    bool phone = size.width < size.height;
+    return phone;
   }
 }

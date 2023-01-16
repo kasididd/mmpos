@@ -33,7 +33,7 @@ class _PhoneTableState extends State<PhoneTable> {
   String rgbSt = "156, 39, 176";
   TextEditingController nameCate = TextEditingController();
   TextEditingController searcBarcode = TextEditingController();
-  var sell = new TextEditingController();
+  var sell = TextEditingController();
   TextEditingController search = TextEditingController();
   String? prompayImage;
   String? grSlect;
@@ -160,144 +160,141 @@ class _PhoneTableState extends State<PhoneTable> {
       //Appbar Stop
 
       //
-      body: Container(
-        child: Column(
-          children: [
-            //Table
+      body: Column(
+        children: [
+          //Table
 
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5),
+            child: SizedBox(
+              //
+              width: double.infinity,
+              height: 30,
+              //
+              child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red.shade100,
+                      side: const BorderSide(color: Colors.red)),
+                  onPressed: () async {
+                    await selectTable(provider);
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                          backgroundColor:
+                              const Color.fromARGB(255, 255, 131, 131),
+                          content: SizedBox(
+                            width: size.width * .6,
+                            height: size.height * .7,
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    IconButton(
+                                        onPressed: () => Navigator.pop(context),
+                                        icon: const Icon(
+                                          Icons.close,
+                                          color: Colors.red,
+                                        )),
+                                    const Text("เลือกโต๊ะ"),
+                                    IconButton(
+                                        onPressed: () => tableSelect(context),
+                                        icon: const Icon(
+                                          Icons.add,
+                                          color: Colors.green,
+                                        ))
+                                  ],
+                                ),
+                                Expanded(
+                                    child: table.isNotEmpty
+                                        ? GridView.count(
+                                            crossAxisCount: 3,
+                                            children: [
+                                              for (int i = 0;
+                                                  i < table.length;
+                                                  i++)
+                                                GestureDetector(
+                                                  onLongPress: () =>
+                                                      TableAPI.delete(
+                                                          u_id: table[i]
+                                                              ['u_id']),
+                                                  onTap: () {
+                                                    setState(() {
+                                                      provider.getTable(
+                                                          table[i]['name']);
+                                                    });
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Card(
+                                                    child: Center(
+                                                        child: Text(
+                                                            "${table[i]['name']}")),
+                                                  ),
+                                                )
+                                            ],
+                                          )
+                                        : const Text(''))
+                              ],
+                            ),
+                          )),
+                    );
+                  },
+                  child: const Text('เลือกโต๊ะ')),
+            ),
+          ),
+          Expanded(
+              child: Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: Container(
+                  child: sideBarItem(size, provider),
+                ),
+              ),
+              Expanded(
+                flex: 3,
+                child: Container(
+                  child: streamData(provider),
+                ),
+              ),
+            ],
+          )),
+
+          Container(
+            child: Align(
+              alignment: Alignment.bottomCenter,
               child: SizedBox(
-                //
                 width: double.infinity,
-                height: 30,
-                //
                 child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        primary: Colors.red.shade100,
-                        side: const BorderSide(color: Colors.red)),
-                    onPressed: () async {
-                      await selectTable(provider);
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                            backgroundColor:
-                                const Color.fromARGB(255, 255, 131, 131),
-                            content: SizedBox(
-                              width: size.width * .6,
-                              height: size.height * .7,
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      IconButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context),
-                                          icon: const Icon(
-                                            Icons.close,
-                                            color: Colors.red,
-                                          )),
-                                      const Text("เลือกโต๊ะ"),
-                                      IconButton(
-                                          onPressed: () => tableSelect(context),
-                                          icon: const Icon(
-                                            Icons.add,
-                                            color: Colors.green,
-                                          ))
-                                    ],
-                                  ),
-                                  Expanded(
-                                      child: table.length > 0
-                                          ? GridView.count(
-                                              crossAxisCount: 3,
-                                              children: [
-                                                for (int i = 0;
-                                                    i < table.length;
-                                                    i++)
-                                                  GestureDetector(
-                                                    onLongPress: () =>
-                                                        TableAPI.delete(
-                                                            u_id: table[i]
-                                                                ['u_id']),
-                                                    onTap: () {
-                                                      setState(() {
-                                                        provider.getTable(
-                                                            table[i]['name']);
-                                                      });
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: Card(
-                                                      child: Center(
-                                                          child: Text(
-                                                              "${table[i]['name']}")),
-                                                    ),
-                                                  )
-                                              ],
-                                            )
-                                          : const Text(''))
-                                ],
-                              ),
-                            )),
-                      );
-                    },
-                    child: const Text('เลือกโต๊ะ')),
-              ),
-            ),
-            Expanded(
-                child: Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    child: sideBarItem(size, provider),
-                  ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: Container(
-                    child: streamData(provider),
-                  ),
-                ),
-              ],
-            )),
-
-            Container(
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
+                  //
+                  style: ElevatedButton.styleFrom(primary: Colors.red),
+                  //
+                  onPressed: () {
                     //
-                    style: ElevatedButton.styleFrom(primary: Colors.red),
+                    showCupertinoModalBottomSheet(
+                      expand: true,
+                      context: context,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) => const ProductAdd(),
+                    );
                     //
-                    onPressed: () {
-                      //
-                      showCupertinoModalBottomSheet(
-                        expand: true,
-                        context: context,
-                        backgroundColor: Colors.transparent,
-                        builder: (context) => const ProductAdd(),
-                      );
-                      //
-                    },
-                    child: Row(
-                      //
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //
-                      children: const [
-                        Text('ตะกร้า 0 รายการ'),
-                        Text('THB 0.00'),
-                      ],
-                    ),
+                  },
+                  child: Row(
+                    //
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //
+                    children: const [
+                      Text('ตะกร้า 0 รายการ'),
+                      Text('THB 0.00'),
+                    ],
                   ),
                 ),
               ),
             ),
-            //
-          ],
-        ),
+          ),
+          //
+        ],
       ),
       //
     );
@@ -427,8 +424,8 @@ class _PhoneTableState extends State<PhoneTable> {
               SizedBox(
                 width: double.infinity,
                 height: size.height * .6,
-                child: (getSlip.length > 0 &&
-                        getItem.length > 0 &&
+                child: (getSlip.isNotEmpty &&
+                        getItem.isNotEmpty &&
                         slip(0) != null)
                     ? ListView(
                         children: [
@@ -571,7 +568,9 @@ class _PhoneTableState extends State<PhoneTable> {
                                 }
                               });
                               await Cate.delete(
-                                  that_is: "cate", u_id: getCate[i]['u_id']);
+                                  provider: provider,
+                                  that_is: "cate",
+                                  u_id: getCate[i]['u_id']);
                               await cateSelect(provider);
                               Navigator.pop(context);
                             } else {
@@ -648,7 +647,7 @@ class _PhoneTableState extends State<PhoneTable> {
                                           const Text('เพิ่มกลุ่มสินค้า'),
                                           TextButton(
                                               onPressed: () async {
-                                                if (nameCate.text.length > 0) {
+                                                if (nameCate.text.isNotEmpty) {
                                                   print(nameCate.text);
                                                   sideBar.add({
                                                     "color":
@@ -825,7 +824,7 @@ class _PhoneTableState extends State<PhoneTable> {
 
   selectAll(Store provider) async {
     print('object');
-    if (search.text.length != 0) {
+    if (search.text.isNotEmpty) {
       print(search.text.length);
       await Future<void>.delayed(const Duration(hours: 1));
     }
@@ -836,7 +835,7 @@ class _PhoneTableState extends State<PhoneTable> {
           Uri.parse('http://$config/mmposAPI/items_crud.php'),
           body: {"action": "GET_ALL", "email": provider.email['email']});
       List res = jsonDecode(request.body);
-      if (res.length > 0) {
+      if (res.isNotEmpty) {
         setState(() {
           getItem = res;
           print(provider.cate);
@@ -871,8 +870,8 @@ class _PhoneTableState extends State<PhoneTable> {
   }
 
   selectByCate() {
-    if (getCate.length > 0) {
-      if (searcBarcode.text.length > 0) {
+    if (getCate.isNotEmpty) {
+      if (searcBarcode.text.isNotEmpty) {
         if (getItem
             .where((element) => element['items_barcode'] == searcBarcode.text)
             .isNotEmpty) {
@@ -904,7 +903,7 @@ class _PhoneTableState extends State<PhoneTable> {
                 child: CircularProgressIndicator(),
               )
             : SizedBox(
-                child: getItem.length > 0 && selectByCate().length >= 0
+                child: getItem.isNotEmpty && selectByCate().length >= 0
                     ? GridView.builder(
                         itemCount: selectByCate().length + 1,
                         gridDelegate:
@@ -1032,7 +1031,7 @@ class _PhoneTableState extends State<PhoneTable> {
 
   sumCheck(index) {
     var toint = getSlip.map((e) => int.parse(e['sum'])).toList();
-    if (getItem.length != 0 && getSlip.length != 0) {
+    if (getItem.isNotEmpty && getSlip.isNotEmpty) {
       priceSum = int.parse(getItem[index]['price']);
     }
     // print(toint);
@@ -1052,7 +1051,7 @@ class _PhoneTableState extends State<PhoneTable> {
       if (response.statusCode == 200) {
         List res = jsonDecode(response.body);
         // print(response.body);
-        if (res.length > 0) {
+        if (res.isNotEmpty) {
           setState(() {
             getCate = res;
           });
@@ -1303,7 +1302,7 @@ class _PhoneTableState extends State<PhoneTable> {
   }
 
   selled() {
-    if (amount && sell.text.length > 0 && int.parse(sell.text) > 0) {
+    if (amount && sell.text.isNotEmpty && int.parse(sell.text) > 0) {
       if ((priceSum - int.parse(sell.text)) >= 0) {
         setState(() {
           err = false;
@@ -1315,7 +1314,7 @@ class _PhoneTableState extends State<PhoneTable> {
       });
       return "ส่วนลดมีค่ามากกว่าสินค้า!";
     }
-    if (!amount && sell.text.length > 0 && int.parse(sell.text) > 0) {
+    if (!amount && sell.text.isNotEmpty && int.parse(sell.text) > 0) {
       if (int.parse(sell.text) <= 100) {
         setState(() {
           err = false;
@@ -1405,7 +1404,7 @@ class _PhoneTableState extends State<PhoneTable> {
                 ),
               ),
               Expanded(
-                  child: customerInfo.length > 0
+                  child: customerInfo.isNotEmpty
                       ? ListView.builder(
                           itemCount: customerInfo.length,
                           itemBuilder: (context, index) => Padding(
@@ -1475,9 +1474,9 @@ class _PhoneTableState extends State<PhoneTable> {
                       const Text('เพิ่มข้อมูลลูกค้า'),
                       GestureDetector(
                         onTap: () => grSlect != null &&
-                                fname.text.length > 0 &&
-                                tel.text.length > 0 &&
-                                lname.text.length > 0
+                                fname.text.isNotEmpty &&
+                                tel.text.isNotEmpty &&
+                                lname.text.isNotEmpty
                             ? CustomerAPI.insertU(
                                 fname: fname.text,
                                 lname: lname.text,
@@ -1491,9 +1490,9 @@ class _PhoneTableState extends State<PhoneTable> {
                         child: Icon(
                           Icons.check,
                           color: grSlect != null &&
-                                  fname.text.length > 0 &&
-                                  tel.text.length > 0 &&
-                                  lname.text.length > 0 &&
+                                  fname.text.isNotEmpty &&
+                                  tel.text.isNotEmpty &&
+                                  lname.text.isNotEmpty &&
                                   colorCheck
                               ? Colors.green
                               : Colors.red,

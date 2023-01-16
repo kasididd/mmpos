@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:mmpos/page/1-welcome_page.dart';
+import 'package:mmpos/page/2-main_page.dart';
 import 'package:mmpos/provider/store.dart';
 import 'package:provider/provider.dart';
 
@@ -111,6 +113,9 @@ class _AccountSettingState extends State<AccountSetting> {
                 TextButton.icon(
                   onPressed: () async {
                     await provider.hiveLogout();
+                    await Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => WelcomePage(),
+                    ));
                   },
                   icon: Icon(
                     Icons.logout_outlined,

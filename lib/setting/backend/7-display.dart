@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:mmpos/view/display_view.dart';
 
 class DisplaySetting extends StatefulWidget {
   const DisplaySetting({super.key});
@@ -51,6 +52,12 @@ class _DisplaySettingState extends State<DisplaySetting> {
               centerTitle: true,
               //
             ),
+      body: Center(
+          child: TextButton(
+              onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => DisplayView(),
+                  )),
+              child: Text("เปิดหน้าจอแยก"))),
       //Appbar Stop
     );
   }

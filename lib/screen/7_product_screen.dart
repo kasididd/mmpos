@@ -44,9 +44,9 @@ class _ProductScreenState extends State<ProductScreen> {
   PlatformFile? image;
   XFile? imageWeb;
   String i = '';
-  Color pickerColor = Color(0xff443a49);
-  Color currentColor = Color(0xff443a49);
-  var colorsPicked = Color(0xfff44336);
+  Color pickerColor = const Color(0xff443a49);
+  Color currentColor = const Color(0xff443a49);
+  var colorsPicked = const Color(0xfff44336);
   var test = 2;
   XFile? showImage;
   List checkL = [
@@ -97,7 +97,7 @@ class _ProductScreenState extends State<ProductScreen> {
             toolbarHeight: 35,
             elevation: 0,
             centerTitle: true,
-            title: Text(
+            title: const Text(
               'เพิ่มกลุ่มสินค้า',
               style: TextStyle(color: Colors.black54, fontSize: 15),
             ),
@@ -127,6 +127,7 @@ class _ProductScreenState extends State<ProductScreen> {
                           .toString();
                       widget.getIn == null
                           ? await DataBase.insertU(
+                              provider: provider,
                               name: name.text,
                               image: nameAd,
                               price: price.text,
@@ -163,13 +164,13 @@ class _ProductScreenState extends State<ProductScreen> {
                     print('ไม่สามารถแอดได้เนื่องจากไม่มีข้อมูล');
                     showDialog(
                       context: context,
-                      builder: (context) => AlertDialog(
+                      builder: (context) => const AlertDialog(
                         title: Text('กรุณาใส่ข้อมูลให้ครบ'),
                       ),
                     );
                   }
                 },
-                child: Text(
+                child: const Text(
                   'บันทึก',
                   style: TextStyle(color: Colors.red),
                 ),
@@ -186,302 +187,60 @@ class _ProductScreenState extends State<ProductScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Center(
-                      child: GestureDetector(
-                        onTap: () => showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: Container(
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    children: [
-                                      TextButton(
-                                          style: ElevatedButton.styleFrom(),
-                                          onPressed: () async {
-                                            print('takePic');
-                                            if (kIsWeb) {
-                                              final newimage =
-                                                  await ImagePicker().pickImage(
-                                                      source:
-                                                          ImageSource.gallery);
-                                              if (newimage != null) {
-                                                final file = newimage;
-                                                setState(() {
-                                                  imageWeb = file;
-                                                  showImage = file;
-                                                });
-                                              } else {
-                                                return;
-                                              }
-                                            }
-                                            if (!kIsWeb) {
-                                              final newimage = await FilePicker
-                                                  .platform
-                                                  .pickFiles(
-                                                      type: FileType.image);
-                                              if (newimage != null) {
-                                                final file =
-                                                    newimage.files.first;
-                                                setState(() {
-                                                  image = file;
-                                                });
-                                              } else {
-                                                return;
-                                              }
-                                            }
-                                          },
-                                          child: SizedBox(
-                                            width: 200,
-                                            child: Card(
-                                              elevation: 8,
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Icon(
-                                                    Icons.image,
-                                                    color: Colors.grey,
-                                                  ),
-                                                  Text(
-                                                    'เพิ่มรูปภาพ',
-                                                    style: TextStyle(
-                                                        fontSize: 24,
-                                                        color: Colors.grey),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          )),
-                                      SizedBox(
-                                        width: 400,
-                                        child: BlockPicker(
-                                          pickerColor: Colors.red,
-                                          onColorChanged: (color) {
-                                            setState(() {
-                                              colorsPicked = color;
-                                              if (widget.getIn != null) {
-                                                widget.getIn['image'] =
-                                                    "${colorsPicked.red},${colorsPicked.green},${colorsPicked.blue}";
-                                              }
-                                            });
-                                            Navigator.of(context).pop();
-                                          },
-                                          layoutBuilder:
-                                              (context, colors, child) {
-                                            return GridView(
-                                              physics:
-                                                  const NeverScrollableScrollPhysics(),
-                                              shrinkWrap: true,
-                                              gridDelegate:
-                                                  const SliverGridDelegateWithMaxCrossAxisExtent(
-                                                maxCrossAxisExtent: 100,
-                                                childAspectRatio: 1.0,
-                                                crossAxisSpacing: 10,
-                                                mainAxisExtent: 100,
-                                                mainAxisSpacing: 10,
-                                              ),
-                                              children: [
-                                                for (Color color in colors)
-                                                  child(color)
-                                              ],
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                    // line1
+                    Utility.phonCheck(context)
+                        ? Column(
+                            children: [
+                              GestureDetector(
+                                onTap: () async => await pickImage(context),
+                                child: imageContainer(),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              // line2
+                              line2(context, provider),
+                            ],
+                          )
+                        : Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: 100,
+                                height: 100,
+                                child: GestureDetector(
+                                  onTap: () async => await pickImage(context),
+                                  child: imageContainer(),
                                 ),
-                                color: Colors.white,
-                                width: MediaQuery.of(context).size.width * .5,
-                                height:
-                                    MediaQuery.of(context).size.height * .5),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              // line2
+                              Expanded(child: line2(context, provider)),
+                            ],
+                          ),
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: Column(
+                            children: [
+                              for (int i = 0; i < 3; i++) checkList(i),
+                            ],
                           ),
                         ),
-                        child: Container(
-                          color: widget.getIn != null
-                              ? (double.tryParse(widget.getIn['image'][0]) ==
-                                      null
-                                  ? colorsPicked
-                                  : myDecoder.readColor(widget.getIn['image']))
-                              : colorsPicked,
-                          width: 100,
-                          height: 100,
-                          child: image != null || widget.getIn != null
-                              ? Center(
-                                  child: Stack(children: [
-                                    SizedBox(
-                                      width: 100,
-                                      height: 100,
-                                      child: image == null
-                                          ? (double.tryParse(
-                                                      widget.getIn['image']) !=
-                                                  null
-                                              ? Image.network(
-                                                  widget.getIn['image'],
-                                                  fit: BoxFit.cover,
-                                                )
-                                              : Text(''))
-                                          : Image.file(
-                                              File(image!.path.toString()),
-                                              fit: BoxFit.cover,
-                                            ),
-                                    ),
-                                    Positioned(
-                                        bottom: 20,
-                                        right: 4,
-                                        child: Container(
-                                          color:
-                                              Color.fromARGB(158, 32, 142, 232),
-                                          child: Text(
-                                            'แตะเพื่อแก้ไข',
-                                            style: TextStyle(fontSize: 16),
-                                          ),
-                                        ))
-                                  ]),
-                                )
-                              : Center(child: Text('กดเพื่อใส่รูป')),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Column(
-                      children: [
-                        Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: SizedBox(
-                                width: double.infinity,
-                                height: 40,
-                                child: TextField(
-                                  controller: name,
-                                  decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.fromLTRB(
-                                        20.0, 10.0, 20.0, 10.0),
-                                    border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(5.0)),
-                                    hintText: 'ชื่อสินค้า',
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  flex: 1,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: SizedBox(
-                                      height: 40,
-                                      child: TextField(
-                                        onChanged: (value) => setState(() {
-                                          if (price.text.length != 0 &&
-                                              cost.text.length != 0 &&
-                                              int.parse(cost.text)
-                                                      .runtimeType ==
-                                                  int) {
-                                            profit = int.parse(price.text) -
-                                                int.parse(cost.text);
-                                          } else {
-                                            profit = 0;
-                                          }
-                                        }),
-                                        controller: price,
-                                        keyboardType: TextInputType.number,
-                                        decoration: InputDecoration(
-                                            contentPadding: EdgeInsets.fromLTRB(
-                                                20.0, 10.0, 20.0, 10.0),
-                                            border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(5.0)),
-                                            hintText: 'ราคา'),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: SizedBox(
-                                      height: 40,
-                                      child: TextField(
-                                        controller: items_barcode,
-                                        keyboardType: TextInputType.number,
-                                        decoration: InputDecoration(
-                                            contentPadding: EdgeInsets.fromLTRB(
-                                                20.0, 10.0, 20.0, 10.0),
-                                            border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(5.0)),
-                                            hintText: 'รหัส'),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: SizedBox(
-                                width: MediaQuery.of(context).size.width / 2.2,
-                                height: 40,
-                                child: TextField(
-                                  controller: weight,
-                                  keyboardType: TextInputType.number,
-                                  decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.fromLTRB(
-                                          20.0, 10.0, 20.0, 10.0),
-                                      border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(5.0)),
-                                      hintText: 'น้ำหนัก'),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: DropDownMet(provider, 2, 'Uncatecory'),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: DropDownMet(provider, 1, 'ชิ้น'),
-                            ),
-
-                            cateAdd
-                                ? Row(
-                                    children: [
-                                      SizedBox(
-                                          width: 70,
-                                          height: 30,
-                                          child: TextField(
-                                            controller: controllerCate,
-                                          )),
-                                    ],
-                                  )
-                                : Text(''),
-                            // IconButton(
-                            //     onPressed: () => setState(() {
-                            //           cateAdd = !cateAdd;
-                            //         }),
-                            //     icon: Icon(cateAdd ? Icons.remove : Icons.add)),
-                          ],
-                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Column(
+                            children: [
+                              for (int i = 3; i < checkL.length; i++)
+                                checkList(i),
+                            ],
+                          ),
+                        )
                       ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: DropDownMet(provider, 3, 'สินค้าทั้วไป'),
-                    ),
-                    for (int i = 0; i < checkL.length; i++) checkList(i),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
@@ -491,7 +250,8 @@ class _ProductScreenState extends State<ProductScreen> {
                           child: TextField(
                             controller: quantity,
                             keyboardType: TextInputType.number,
-                            decoration: InputDecoration(hintText: 'จำนวน'),
+                            decoration:
+                                const InputDecoration(hintText: 'จำนวน'),
                           ),
                         ),
                         SizedBox(
@@ -510,8 +270,8 @@ class _ProductScreenState extends State<ProductScreen> {
                             controller: cost,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
-                                contentPadding:
-                                    EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                                contentPadding: const EdgeInsets.fromLTRB(
+                                    20.0, 10.0, 20.0, 10.0),
                                 border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(5.0)),
                                 hintText: 'ต้นทุน'),
@@ -519,13 +279,12 @@ class _ProductScreenState extends State<ProductScreen> {
                         ),
                         SizedBox(
                             width: MediaQuery.of(context).size.width / 3.4,
-                            height: 50,
                             child: Column(
                               children: [
-                                Text('กำไรที่ได้/ชิ้น'),
+                                const Text('กำไรที่ได้/ชิ้น'),
                                 Text(
                                   "$profit",
-                                  style: TextStyle(fontSize: 20),
+                                  style: const TextStyle(fontSize: 20),
                                 ),
                               ],
                             )),
@@ -536,6 +295,289 @@ class _ProductScreenState extends State<ProductScreen> {
               ),
             ),
           )),
+    );
+  }
+
+  Column line2(BuildContext context, Store provider) {
+    return Column(
+      children: [
+        Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                width: double.infinity,
+                height: 40,
+                child: TextField(
+                  controller: name,
+                  decoration: InputDecoration(
+                    contentPadding:
+                        const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0)),
+                    hintText: 'ชื่อสินค้า',
+                  ),
+                ),
+              ),
+            ),
+            Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      height: 40,
+                      child: TextField(
+                        onChanged: (value) => setState(() {
+                          if (price.text.length != 0 &&
+                              cost.text.length != 0 &&
+                              int.parse(cost.text).runtimeType == int) {
+                            profit =
+                                int.parse(price.text) - int.parse(cost.text);
+                          } else {
+                            profit = 0;
+                          }
+                        }),
+                        controller: price,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.fromLTRB(
+                                20.0, 10.0, 20.0, 10.0),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0)),
+                            hintText: 'ราคา'),
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      height: 40,
+                      child: TextField(
+                        controller: items_barcode,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.fromLTRB(
+                                20.0, 10.0, 20.0, 10.0),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0)),
+                            hintText: 'รหัส'),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: DropDownMet(provider, 2, 'Uncatecory'),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: TextField(
+                        controller: weight,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.fromLTRB(
+                                20.0, 10.0, 20.0, 10.0),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0)),
+                            hintText: 'น้ำหนัก'),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              flex: 6,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: DropDownMet(provider, 3, 'สินค้าทั้วไป'),
+              ),
+            ),
+            Expanded(
+              flex: 4,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: DropDownMet(provider, 1, 'ชิ้น'),
+              ),
+            ),
+            cateAdd
+                ? Row(
+                    children: [
+                      SizedBox(
+                          width: 70,
+                          height: 30,
+                          child: TextField(
+                            controller: controllerCate,
+                          )),
+                    ],
+                  )
+                : const Text(''),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Container imageContainer() {
+    return Container(
+      color: widget.getIn != null
+          ? (double.tryParse(widget.getIn['image'][0]) == null
+              ? colorsPicked
+              : myDecoder.readColor(widget.getIn['image']))
+          : colorsPicked,
+      width: 100,
+      height: 100,
+      child: image != null || widget.getIn != null
+          ? Center(
+              child: Stack(children: [
+                SizedBox(
+                  width: 100,
+                  height: 100,
+                  child: image == null
+                      ? (double.tryParse(widget.getIn['image']) != null
+                          ? Image.network(
+                              widget.getIn['image'],
+                              fit: BoxFit.cover,
+                            )
+                          : const Text(''))
+                      : Image.file(
+                          File(image!.path.toString()),
+                          fit: BoxFit.cover,
+                        ),
+                ),
+                Positioned(
+                    bottom: 20,
+                    right: 4,
+                    child: Container(
+                      color: const Color.fromARGB(158, 32, 142, 232),
+                      child: const Text(
+                        'แตะเพื่อแก้ไข',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ))
+              ]),
+            )
+          : const Center(child: Text('กดเพื่อใส่รูป')),
+    );
+  }
+
+  pickImage(BuildContext context) async {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Container(
+            color: Colors.white,
+            width: MediaQuery.of(context).size.width * .5,
+            height: MediaQuery.of(context).size.height * .5,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  TextButton(
+                      style: ElevatedButton.styleFrom(),
+                      onPressed: () async {
+                        print('takePic');
+                        if (kIsWeb) {
+                          final newimage = await ImagePicker()
+                              .pickImage(source: ImageSource.gallery);
+                          if (newimage != null) {
+                            final file = newimage;
+                            setState(() {
+                              imageWeb = file;
+                              showImage = file;
+                            });
+                          } else {
+                            return;
+                          }
+                        }
+                        if (!kIsWeb) {
+                          final newimage = await FilePicker.platform
+                              .pickFiles(type: FileType.image);
+                          if (newimage != null) {
+                            final file = newimage.files.first;
+                            setState(() {
+                              image = file;
+                            });
+                          } else {
+                            return;
+                          }
+                        }
+                      },
+                      child: SizedBox(
+                        width: 200,
+                        child: Card(
+                          elevation: 8,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.image,
+                                color: Colors.grey,
+                              ),
+                              const Text(
+                                'เพิ่มรูปภาพ',
+                                style:
+                                    TextStyle(fontSize: 24, color: Colors.grey),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )),
+                  SizedBox(
+                    width: 400,
+                    child: BlockPicker(
+                      pickerColor: Colors.red,
+                      onColorChanged: (color) {
+                        setState(() {
+                          colorsPicked = color;
+                          if (widget.getIn != null) {
+                            widget.getIn['image'] =
+                                "${colorsPicked.red},${colorsPicked.green},${colorsPicked.blue}";
+                          }
+                        });
+                        Navigator.of(context).pop();
+                      },
+                      layoutBuilder: (context, colors, child) {
+                        return GridView(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          gridDelegate:
+                              const SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 100,
+                            childAspectRatio: 1.0,
+                            crossAxisSpacing: 10,
+                            mainAxisExtent: 100,
+                            mainAxisSpacing: 10,
+                          ),
+                          children: [for (Color color in colors) child(color)],
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            )),
+      ),
     );
   }
 
@@ -600,12 +642,12 @@ class _ProductScreenState extends State<ProductScreen> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text('เพิ่ม ชื่อเรียกสินค้า'),
-                                TextField(),
+                                const Text('เพิ่ม ชื่อเรียกสินค้า'),
+                                const TextField(),
                                 OutlinedButton(
                                     onPressed: () =>
                                         typProduct.add(addTypeContoller.text),
-                                    child: Text('เพิ่ม'))
+                                    child: const Text('เพิ่ม'))
                               ],
                             )),
                       ),
@@ -668,11 +710,9 @@ class _ProductScreenState extends State<ProductScreen> {
   }
 
   getUpdate(Store provider) async {
-    var request = await http
-        .post(Uri.parse('http://$config/mmposAPI/items_crud.php'), body: {
-      "action": "GET_ALL",
-      "email": FirebaseAuth.instance.currentUser!.email
-    });
+    var request = await http.post(
+        Uri.parse('http://$config/mmposAPI/items_crud.php'),
+        body: {"action": "GET_ALL", "email": provider.email['email']});
     var res = jsonDecode(request.body);
     setState(() {
       provider.getItem(res);
