@@ -276,6 +276,7 @@ class _TabletTableState extends State<TabletTable> {
             width: MediaQuery.of(context).size.width * 0.08,
             height: double.infinity,
             color: Colors.red,
+            child: sideBarItem(size, provider),
           ),
 
           //Sildmenu Stop
@@ -287,8 +288,13 @@ class _TabletTableState extends State<TabletTable> {
             height: double.infinity,
             child: Column(
               children: [
-                //
                 Expanded(
+                  child: Container(
+                    child: streamData(provider),
+                  ),
+                ),
+                //
+                Container(
                   child: Align(
                       alignment: Alignment.bottomCenter,
                       child: Row(
@@ -1257,7 +1263,7 @@ class _TabletTableState extends State<TabletTable> {
                                   child: Column(
                                     children: [
                                       Expanded(
-                                        flex: 4,
+                                        flex: 5,
                                         child: Container(
                                           color: double.tryParse(
                                                       selectByCate()[index]
@@ -1281,7 +1287,7 @@ class _TabletTableState extends State<TabletTable> {
                                         ),
                                       ),
                                       Expanded(
-                                        flex: 1,
+                                        flex: 2,
                                         child: Column(
                                           children: [
                                             Text(selectByCate()[index]['name']),
