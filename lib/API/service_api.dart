@@ -567,7 +567,7 @@ class UserStore {
         const service_id = "service_lgmfds4";
         const template_id = "template_0vcwepe";
         const user_id = "5Gjw1_A36I08CT46m";
-        String to_email = "kasidid.wan@gmail.com";
+        String to_email = email;
         String link =
             "http://$config/mmposAPI/change_password/?token=$token&email=$email";
         var res = await http.post(url,

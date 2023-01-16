@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:mmpos/API/service_api.dart';
 import 'package:mmpos/page/2-main_page.dart';
 import 'package:mmpos/provider/store.dart';
+import 'package:mmpos/src/add-product.dart';
 import 'package:mmpos/widget/drawer_widget.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -1238,7 +1239,7 @@ class _TabletTableState extends State<TabletTable> {
                                     expand: true,
                                     context: context,
                                     backgroundColor: Colors.transparent,
-                                    builder: (context) => const MainPage(),
+                                    builder: (context) => const ProductAdd(),
                                   );
                                 },
                                 child: const Card(
@@ -1252,7 +1253,6 @@ class _TabletTableState extends State<TabletTable> {
                               )
                             : GestureDetector(
                                 onTap: () async {
-                                  print('object');
                                   await Slip.insertU(
                                       name_item: selectByCate()[index]['name'],
                                       sum: selectByCate()[index]['price']);

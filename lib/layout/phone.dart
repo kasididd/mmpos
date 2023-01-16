@@ -1,8 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:mmpos/API/service_api.dart';
 import 'package:http/http.dart' as http;
@@ -43,7 +41,7 @@ class _PhoneTableState extends State<PhoneTable> {
   int setSideBar = 0;
   int priceSum = 0;
   bool onOff = true;
-  var colorsPicked = Color(0xfff44336);
+  var colorsPicked = const Color(0xfff44336);
   List getItem = [
     {
       "u_id": "46",
@@ -92,7 +90,7 @@ class _PhoneTableState extends State<PhoneTable> {
         leading: Builder(
           builder: (context) => // Ensure Scaffold is in context
               IconButton(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.menu,
                     color: Colors.red,
                   ),
@@ -112,7 +110,7 @@ class _PhoneTableState extends State<PhoneTable> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 5),
                 child: Row(
-                  children: [
+                  children: const [
                     Icon(
                       Icons.search,
                       color: Colors.grey,
@@ -120,7 +118,7 @@ class _PhoneTableState extends State<PhoneTable> {
                     ),
                     //
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      padding: EdgeInsets.symmetric(horizontal: 10),
                       child: Text(
                         'ค้นหาสินค้าทั้งหมด',
                         style: TextStyle(color: Colors.grey, fontSize: 15),
@@ -132,7 +130,7 @@ class _PhoneTableState extends State<PhoneTable> {
               //
               IconButton(
                   onPressed: () {},
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.qr_code_scanner_sharp,
                     color: Colors.red,
                     size: 20,
@@ -149,11 +147,11 @@ class _PhoneTableState extends State<PhoneTable> {
                   expand: true,
                   context: context,
                   backgroundColor: Colors.transparent,
-                  builder: (context) => SearchWidget(),
+                  builder: (context) => const SearchWidget(),
                 );
                 //
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.search,
                 color: Colors.red,
               ))
@@ -169,7 +167,7 @@ class _PhoneTableState extends State<PhoneTable> {
 
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 5),
-              child: Container(
+              child: SizedBox(
                 //
                 width: double.infinity,
                 height: 30,
@@ -177,14 +175,15 @@ class _PhoneTableState extends State<PhoneTable> {
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         primary: Colors.red.shade100,
-                        side: BorderSide(color: Colors.red)),
+                        side: const BorderSide(color: Colors.red)),
                     onPressed: () async {
                       await selectTable(provider);
                       showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
-                            backgroundColor: Color.fromARGB(255, 255, 131, 131),
-                            content: Container(
+                            backgroundColor:
+                                const Color.fromARGB(255, 255, 131, 131),
+                            content: SizedBox(
                               width: size.width * .6,
                               height: size.height * .7,
                               child: Column(
@@ -196,14 +195,14 @@ class _PhoneTableState extends State<PhoneTable> {
                                       IconButton(
                                           onPressed: () =>
                                               Navigator.pop(context),
-                                          icon: Icon(
+                                          icon: const Icon(
                                             Icons.close,
                                             color: Colors.red,
                                           )),
-                                      Text("เลือกโต๊ะ"),
+                                      const Text("เลือกโต๊ะ"),
                                       IconButton(
                                           onPressed: () => tableSelect(context),
-                                          icon: Icon(
+                                          icon: const Icon(
                                             Icons.add,
                                             color: Colors.green,
                                           ))
@@ -237,20 +236,37 @@ class _PhoneTableState extends State<PhoneTable> {
                                                   )
                                               ],
                                             )
-                                          : Text(''))
+                                          : const Text(''))
                                 ],
                               ),
                             )),
                       );
                     },
-                    child: Text('เลือกโต๊ะ')),
+                    child: const Text('เลือกโต๊ะ')),
               ),
             ),
-            //
             Expanded(
+                child: Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    child: sideBarItem(size, provider),
+                  ),
+                ),
+                Expanded(
+                  flex: 3,
+                  child: Container(
+                    child: streamData(provider),
+                  ),
+                ),
+              ],
+            )),
+
+            Container(
               child: Align(
                 alignment: Alignment.bottomCenter,
-                child: Container(
+                child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     //
@@ -262,7 +278,7 @@ class _PhoneTableState extends State<PhoneTable> {
                         expand: true,
                         context: context,
                         backgroundColor: Colors.transparent,
-                        builder: (context) => ProductAdd(),
+                        builder: (context) => const ProductAdd(),
                       );
                       //
                     },
@@ -270,7 +286,7 @@ class _PhoneTableState extends State<PhoneTable> {
                       //
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       //
-                      children: [
+                      children: const [
                         Text('ตะกร้า 0 รายการ'),
                         Text('THB 0.00'),
                       ],
@@ -306,7 +322,7 @@ class _PhoneTableState extends State<PhoneTable> {
                           await selectTable(provider);
                           Navigator.pop(context);
                         },
-                        child: Text('เพิ่มโต๊ะ'))
+                        child: const Text('เพิ่มโต๊ะ'))
                   ],
                 )),
               ),
@@ -329,7 +345,7 @@ class _PhoneTableState extends State<PhoneTable> {
             ),
             Text(
               '$name',
-              style: TextStyle(
+              style: const TextStyle(
                   fontWeight: FontWeight.bold, color: Colors.red, fontSize: 16),
             )
           ],
@@ -355,11 +371,11 @@ class _PhoneTableState extends State<PhoneTable> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
+                  SizedBox(
                     width: double.infinity,
                     height: 60,
                     child: TextButton(
-                      child: Text(
+                      child: const Text(
                         'เลือกโต๊ะ',
                         style: TextStyle(color: Colors.red, fontSize: 20),
                       ),
@@ -374,12 +390,15 @@ class _PhoneTableState extends State<PhoneTable> {
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [Text('รวมก่อนลด'), Text('$priceSum')],
+                          children: [
+                            const Text('รวมก่อนลด'),
+                            Text('$priceSum')
+                          ],
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('รวมก่อนลด'),
+                            const Text('รวมก่อนลด'),
                             Text(selled().toString())
                           ],
                         ),
@@ -404,7 +423,7 @@ class _PhoneTableState extends State<PhoneTable> {
                                 },
                               );
                             },
-                      child: Text('ชำระเงิน'))),
+                      child: const Text('ชำระเงิน'))),
               SizedBox(
                 width: double.infinity,
                 height: size.height * .6,
@@ -430,19 +449,19 @@ class _PhoneTableState extends State<PhoneTable> {
                                                 slip(i)['image'],
                                                 fit: BoxFit.cover,
                                               )
-                                            : Text('')),
+                                            : const Text('')),
                                 title: Text(slip(i)['name']),
                                 subtitle: Text(slip(i)['price']),
                                 trailing: GestureDetector(
                                   onTap: () =>
                                       Slip.delete(u_id: getSlip[i]['u_id']),
-                                  child: Icon(
+                                  child: const Icon(
                                     Icons.delete,
                                   ),
                                 )),
                         ],
                       )
-                    : Text(''),
+                    : const Text(''),
               ),
             ],
           ),
@@ -455,13 +474,13 @@ class _PhoneTableState extends State<PhoneTable> {
     return AlertDialog(
       content: StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
-          return Container(
+          return SizedBox(
             width: size.width * .5,
             height: size.height * .6,
             child: Column(
               children: [
                 // appbar
-                Container(
+                const SizedBox(
                   width: double.infinity,
                   height: 50,
                   child: Center(child: Text("ชำระเงิน")),
@@ -485,7 +504,7 @@ class _PhoneTableState extends State<PhoneTable> {
                                           prompay = true;
                                         });
                                       },
-                                      child: Text('ชำระเงินสด')),
+                                      child: const Text('ชำระเงินสด')),
                                 ),
                                 SizedBox(
                                   width: double.infinity,
@@ -495,17 +514,17 @@ class _PhoneTableState extends State<PhoneTable> {
                                           prompay = false;
                                         });
                                       },
-                                      child: Text('ชำระพร้อมเพย์')),
+                                      child: const Text('ชำระพร้อมเพย์')),
                                 ),
                               ],
                             ),
                           ),
                           Expanded(
-                              child: Container(
+                              child: SizedBox(
                             height: double.infinity,
                             child: !prompay
                                 ? Image.memory(base64Decode(prompayImage!))
-                                : Text('สด'),
+                                : const Text('สด'),
                           ))
                         ],
                       )),
@@ -531,13 +550,13 @@ class _PhoneTableState extends State<PhoneTable> {
               InkWell(
                 onTap: () => {
                   setState(() => setSideBar = i),
-                  cateSelect(),
+                  cateSelect(provider),
                   searcBarcode.clear()
                 },
                 onLongPress: () => showDialog(
                   context: context,
                   builder: (context) => AlertDialog(
-                    title: Text('ต้องการลบ cate gory?'),
+                    title: const Text('ต้องการลบ cate gory?'),
                     actions: [
                       OutlinedButton(
                           onPressed: () async {
@@ -553,13 +572,13 @@ class _PhoneTableState extends State<PhoneTable> {
                               });
                               await Cate.delete(
                                   that_is: "cate", u_id: getCate[i]['u_id']);
-                              await cateSelect();
+                              await cateSelect(provider);
                               Navigator.pop(context);
                             } else {
                               Navigator.pop(context);
                               showDialog(
                                 context: context,
-                                builder: (context) => AlertDialog(
+                                builder: (context) => const AlertDialog(
                                   title: Text(
                                     'Category ไม่สามารถน้อยกว่า 1 !',
                                     style: TextStyle(
@@ -569,32 +588,37 @@ class _PhoneTableState extends State<PhoneTable> {
                               );
                             }
                           },
-                          child: Text(
+                          child: const Text(
                             "ยืนยัน",
                             style: TextStyle(color: Colors.red),
                           )),
                       OutlinedButton(
                           onPressed: () => Navigator.pop(context),
-                          child: Text("ยกเลิก")),
+                          child: const Text("ยกเลิก")),
                     ],
                   ),
                 ),
                 child: SizedBox(
                   width: double.infinity,
                   height: 100,
-                  child: Card(
-                    color: setSideBar == i
-                        ? Colors.grey.shade200
-                        : readColor(getCate[i]['color']),
-                    child: Center(
-                        child: Text(
-                      getCate[i]['name'],
-                      style: TextStyle(
-                          fontSize: 16,
-                          color:
-                              setSideBar == i ? Colors.black87 : Colors.white),
-                    )),
-                  ),
+                  child: provider.cate.isEmpty
+                      ? const Card(
+                          child: Text("กรุณาเพิ่ม Category"),
+                        )
+                      : Card(
+                          color: setSideBar == i
+                              ? Colors.grey.shade200
+                              : readColor(provider.cate[i]['color']),
+                          child: Center(
+                              child: Text(
+                            provider.cate[i]['name'],
+                            style: TextStyle(
+                                fontSize: 16,
+                                color: setSideBar == i
+                                    ? Colors.black87
+                                    : Colors.white),
+                          )),
+                        ),
                 ),
               ),
             InkWell(
@@ -607,7 +631,7 @@ class _PhoneTableState extends State<PhoneTable> {
                         return SingleChildScrollView(
                           child: Column(
                             children: List<Widget>.generate(1, (int index) {
-                              return Container(
+                              return SizedBox(
                                 width: size.width,
                                 height: size.height * .7,
                                 child: SingleChildScrollView(
@@ -620,8 +644,8 @@ class _PhoneTableState extends State<PhoneTable> {
                                           IconButton(
                                               onPressed: () =>
                                                   Navigator.of(context).pop(),
-                                              icon: Icon(Icons.close)),
-                                          Text('เพิ่มกลุ่มสินค้า'),
+                                              icon: const Icon(Icons.close)),
+                                          const Text('เพิ่มกลุ่มสินค้า'),
                                           TextButton(
                                               onPressed: () async {
                                                 if (nameCate.text.length > 0) {
@@ -638,19 +662,19 @@ class _PhoneTableState extends State<PhoneTable> {
                                                           "${colorsPicked.red},${colorsPicked.green},${colorsPicked.blue}");
                                                   nameCate.clear();
 
-                                                  await cateSelect();
+                                                  await cateSelect(provider);
                                                   Navigator.of(context).pop();
                                                 } else {
                                                   showDialog(
                                                     context: context,
                                                     builder: (context) =>
-                                                        AlertDialog(
+                                                        const AlertDialog(
                                                             title: Text(
                                                                 "โปรดใส่ชื่อ!")),
                                                   );
                                                 }
                                               },
-                                              child: Text('บันทึก'))
+                                              child: const Text('บันทึก'))
                                         ],
                                       ),
                                       Row(
@@ -662,7 +686,7 @@ class _PhoneTableState extends State<PhoneTable> {
                                             height: 40,
                                             child: TextField(
                                               controller: nameCate,
-                                              decoration: InputDecoration(
+                                              decoration: const InputDecoration(
                                                   hintText: "ชื่อกลุ่มสินค้า",
                                                   border: OutlineInputBorder(
                                                     borderSide: BorderSide(
@@ -674,12 +698,12 @@ class _PhoneTableState extends State<PhoneTable> {
                                           ),
                                         ],
                                       ),
-                                      SizedBox(height: 40),
+                                      const SizedBox(height: 40),
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text('เลือกสีพื้นหลัง'),
+                                          const Text('เลือกสีพื้นหลัง'),
                                           GestureDetector(
                                             onTap: () => showDialog(
                                                 context: context,
@@ -754,7 +778,7 @@ class _PhoneTableState extends State<PhoneTable> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text('เปิดใช้งาน'),
+                                          const Text('เปิดใช้งาน'),
                                           SizedBox(
                                               width: 80,
                                               height: 80,
@@ -803,24 +827,23 @@ class _PhoneTableState extends State<PhoneTable> {
     print('object');
     if (search.text.length != 0) {
       print(search.text.length);
-      await Future<void>.delayed(Duration(hours: 1));
+      await Future<void>.delayed(const Duration(hours: 1));
     }
-    await Future.delayed(Duration(milliseconds: 482));
+    await Future.delayed(const Duration(milliseconds: 482));
 
     try {
-      var request = await http
-          .post(Uri.parse('http://$config/mmposAPI/items_crud.php'), body: {
-        "action": "GET_ALL",
-        "email": " FirebaseAuth.instance.currentUser!.email"
-      });
+      var request = await http.post(
+          Uri.parse('http://$config/mmposAPI/items_crud.php'),
+          body: {"action": "GET_ALL", "email": provider.email['email']});
       List res = jsonDecode(request.body);
       if (res.length > 0) {
         setState(() {
           getItem = res;
+          print(provider.cate);
         });
       }
       // slipCrude
-      await cateSelect();
+      await cateSelect(provider);
       await slipSlect();
       await sumCheck(0);
       setState(() {
@@ -877,15 +900,16 @@ class _PhoneTableState extends State<PhoneTable> {
   FutureBuilder<dynamic> streamData(provider) {
     return FutureBuilder(
         builder: (context, snapshot) => snapshot.hasData
-            ? Center(
+            ? const Center(
                 child: CircularProgressIndicator(),
               )
             : SizedBox(
                 child: getItem.length > 0 && selectByCate().length >= 0
                     ? GridView.builder(
                         itemCount: selectByCate().length + 1,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2, childAspectRatio: 0.85),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2, childAspectRatio: 0.75),
                         itemBuilder: (context, index) => selectByCate()
                                         .length ==
                                     index ||
@@ -897,10 +921,10 @@ class _PhoneTableState extends State<PhoneTable> {
                                     expand: true,
                                     context: context,
                                     backgroundColor: Colors.transparent,
-                                    builder: (context) => ProductScreen(),
+                                    builder: (context) => const ProductScreen(),
                                   );
                                 },
-                                child: Card(
+                                child: const Card(
                                   color: Colors.white,
                                   child: Icon(
                                     Icons.add,
@@ -942,11 +966,11 @@ class _PhoneTableState extends State<PhoneTable> {
                                                       ['image'],
                                                   fit: BoxFit.cover,
                                                 )
-                                              : Text(''),
+                                              : const Text(''),
                                         ),
                                       ),
                                       Expanded(
-                                        flex: 1,
+                                        flex: 2,
                                         child: Column(
                                           children: [
                                             Text(selectByCate()[index]['name']),
@@ -960,7 +984,7 @@ class _PhoneTableState extends State<PhoneTable> {
                                 ),
                               ),
                       )
-                    : Center(child: Text('')),
+                    : const Center(child: Text('')),
               ));
   }
 
@@ -992,7 +1016,7 @@ class _PhoneTableState extends State<PhoneTable> {
 
   duration() async* {
     while (onStream) {
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
       yield '';
     }
   }
@@ -1018,12 +1042,11 @@ class _PhoneTableState extends State<PhoneTable> {
     }
   }
 
-  cateSelect() async {
+  cateSelect(Store provider) async {
     try {
-      print('go');
       var response = await http.post(Uri.parse(cateLink), body: {
         "action": "GET_ALL",
-        "email": " FirebaseAuth.instance.currentUser!.email.toString()",
+        "email": provider.email['email'],
         "that_is": "cate"
       });
       if (response.statusCode == 200) {
@@ -1061,7 +1084,7 @@ class _PhoneTableState extends State<PhoneTable> {
         content: SingleChildScrollView(
             child: Column(
           children: [
-            Text('ค้นหาด้วยรหัสสินค้า'),
+            const Text('ค้นหาด้วยรหัสสินค้า'),
             TextField(
               controller: searcBarcode,
               keyboardType: TextInputType.number,
@@ -1070,7 +1093,8 @@ class _PhoneTableState extends State<PhoneTable> {
         )),
         actions: [
           OutlinedButton(
-              onPressed: () => Navigator.pop(context), child: Text('เรียบร้อย'))
+              onPressed: () => Navigator.pop(context),
+              child: const Text('เรียบร้อย'))
         ],
       ),
     );
@@ -1083,7 +1107,7 @@ class _PhoneTableState extends State<PhoneTable> {
       context: context,
       builder: (context) => AlertDialog(
         content: StatefulBuilder(
-          builder: (context, setState) => Container(
+          builder: (context, setState) => SizedBox(
             width: size.width * .4,
             height: size.height * .6,
             child: SingleChildScrollView(
@@ -1092,7 +1116,7 @@ class _PhoneTableState extends State<PhoneTable> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.arrow_back_ios,
                       color: Colors.green,
                     ),
@@ -1147,15 +1171,15 @@ class _PhoneTableState extends State<PhoneTable> {
                   height: 2,
                 ),
                 TextField(
-                  decoration: InputDecoration(hintText: "จำนวนเงิน"),
+                  decoration: const InputDecoration(hintText: "จำนวนเงิน"),
                   controller: sell,
                   keyboardType: TextInputType.number,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 40,
                 ),
                 Container(
-                  padding: EdgeInsets.all(2),
+                  padding: const EdgeInsets.all(2),
                   decoration: BoxDecoration(
                       color: Colors.grey.shade200,
                       borderRadius: BorderRadius.circular(10)),
@@ -1175,7 +1199,7 @@ class _PhoneTableState extends State<PhoneTable> {
                                   color: amount
                                       ? Colors.white
                                       : Colors.transparent),
-                              child: Center(child: Text('Amount')),
+                              child: const Center(child: Text('Amount')),
                             ),
                           )),
                       Expanded(
@@ -1191,7 +1215,7 @@ class _PhoneTableState extends State<PhoneTable> {
                                       ? Colors.white
                                       : Colors.transparent,
                                 ),
-                                child: Center(child: Text('%'))),
+                                child: const Center(child: Text('%'))),
                           )),
                     ],
                   ),
@@ -1208,9 +1232,9 @@ class _PhoneTableState extends State<PhoneTable> {
                             setState(
                               () => amount = false,
                             );
-                            sell.value = TextEditingValue(text: "23");
+                            sell.value = const TextEditingValue(text: "23");
                           },
-                          child: Card(
+                          child: const Card(
                             color: Colors.redAccent,
                             child: Center(child: Text('ลด10%')),
                           ),
@@ -1220,9 +1244,9 @@ class _PhoneTableState extends State<PhoneTable> {
                             setState(
                               () => amount = false,
                             );
-                            sell.value = TextEditingValue(text: "10");
+                            sell.value = const TextEditingValue(text: "10");
                           },
-                          child: Card(
+                          child: const Card(
                             color: Colors.redAccent,
                             child: Center(child: Text('ลด10%')),
                           ),
@@ -1232,9 +1256,9 @@ class _PhoneTableState extends State<PhoneTable> {
                             setState(
                               () => amount = false,
                             );
-                            sell.value = TextEditingValue(text: "15");
+                            sell.value = const TextEditingValue(text: "15");
                           },
-                          child: Card(
+                          child: const Card(
                             color: Colors.redAccent,
                             child: Center(child: Text('ลด15%')),
                           ),
@@ -1244,9 +1268,9 @@ class _PhoneTableState extends State<PhoneTable> {
                             setState(
                               () => amount = false,
                             );
-                            sell.value = TextEditingValue(text: "20");
+                            sell.value = const TextEditingValue(text: "20");
                           },
-                          child: Card(
+                          child: const Card(
                             color: Colors.redAccent,
                             child: Center(child: Text('ลด20%')),
                           ),
@@ -1256,9 +1280,9 @@ class _PhoneTableState extends State<PhoneTable> {
                             setState(
                               () => amount = false,
                             );
-                            sell.value = TextEditingValue(text: "50");
+                            sell.value = const TextEditingValue(text: "50");
                           },
-                          child: Card(
+                          child: const Card(
                             color: Colors.redAccent,
                             child: Center(child: Text('ลด50%')),
                           ),
@@ -1271,7 +1295,8 @@ class _PhoneTableState extends State<PhoneTable> {
         ),
         actions: [
           OutlinedButton(
-              onPressed: () => Navigator.pop(context), child: Text('เรียบร้อย'))
+              onPressed: () => Navigator.pop(context),
+              child: const Text('เรียบร้อย'))
         ],
       ),
     );
@@ -1314,24 +1339,24 @@ class _PhoneTableState extends State<PhoneTable> {
       context: context,
       builder: (context) => AlertDialog(
         content: SingleChildScrollView(
-            child: Container(
+            child: SizedBox(
           width: MediaQuery.of(context).size.width * .6,
           height: MediaQuery.of(context).size.height * .6,
           child: Column(
             children: [
-              Container(
+              SizedBox(
                 height: 60,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
+                    SizedBox(
                         width: 60,
                         height: double.infinity,
                         child: InkWell(
                             onTap: () => Navigator.pop(context),
-                            child: Center(child: Text('ปิด')))),
-                    Text('ค้นหาสมาชิก'),
-                    Container(
+                            child: const Center(child: Text('ปิด')))),
+                    const Text('ค้นหาสมาชิก'),
+                    SizedBox(
                         width: 60,
                         height: double.infinity,
                         child: InkWell(
@@ -1340,18 +1365,18 @@ class _PhoneTableState extends State<PhoneTable> {
                               await await grSelect();
                               await dialogAddCustomer(context);
                             },
-                            child: Icon(Icons.edit)))
+                            child: const Icon(Icons.edit)))
                   ],
                 ),
               ),
               Container(
                 child: Row(
                   children: [
-                    Icon(Icons.search),
+                    const Icon(Icons.search),
                     Expanded(
                       child: SearchField(
                         controller: search,
-                        searchInputDecoration: InputDecoration(
+                        searchInputDecoration: const InputDecoration(
                           border: InputBorder.none,
                           icon: Icon(Icons.search),
                           hintText: 'ค้นหาด้วยเบอร์...',
@@ -1375,7 +1400,7 @@ class _PhoneTableState extends State<PhoneTable> {
                             .toList(),
                       ),
                     ),
-                    Icon(Icons.qr_code)
+                    const Icon(Icons.qr_code)
                   ],
                 ),
               ),
@@ -1395,7 +1420,7 @@ class _PhoneTableState extends State<PhoneTable> {
                                       child: Center(
                                         child: Text(
                                           customerInfo[index]['fname'][0],
-                                          style: TextStyle(fontSize: 24),
+                                          style: const TextStyle(fontSize: 24),
                                         ),
                                       ),
                                     ),
@@ -1406,7 +1431,7 @@ class _PhoneTableState extends State<PhoneTable> {
                                       Text("${customerInfo[index]['tel']}"),
                                 ),
                               ))
-                      : Text(''))
+                      : const Text(''))
             ],
           ),
         )),
@@ -1440,14 +1465,14 @@ class _PhoneTableState extends State<PhoneTable> {
           builder: (context, setState) => SingleChildScrollView(
             child: Column(
               children: [
-                Container(
+                SizedBox(
                   width: double.infinity,
                   height: 60,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Icon(Icons.close),
-                      Text('เพิ่มข้อมูลลูกค้า'),
+                      const Icon(Icons.close),
+                      const Text('เพิ่มข้อมูลลูกค้า'),
                       GestureDetector(
                         onTap: () => grSlect != null &&
                                 fname.text.length > 0 &&
@@ -1477,13 +1502,13 @@ class _PhoneTableState extends State<PhoneTable> {
                     ],
                   ),
                 ),
-                Text('ชื่อลูกค้า'),
+                const Text('ชื่อลูกค้า'),
                 TextField(
                   controller: fname,
-                  decoration: InputDecoration(hintText: "กรอกชื่อ"),
+                  decoration: const InputDecoration(hintText: "กรอกชื่อ"),
                 ),
-                Text('นามสกุลลูกค้า'),
-                Text('เพศ'),
+                const Text('นามสกุลลูกค้า'),
+                const Text('เพศ'),
                 Row(
                   children: [
                     for (int i = 0; i < sex.length; i++)
@@ -1508,18 +1533,18 @@ class _PhoneTableState extends State<PhoneTable> {
                 TextField(
                   controller: lname,
                   keyboardType: TextInputType.number,
-                  decoration: InputDecoration(hintText: "กรอกนามสกุล"),
+                  decoration: const InputDecoration(hintText: "กรอกนามสกุล"),
                 ),
-                Text("เบอร์โทร"),
+                const Text("เบอร์โทร"),
                 TextField(
                   controller: tel,
                   keyboardType: TextInputType.number,
-                  decoration: InputDecoration(hintText: "ex.0982344***"),
+                  decoration: const InputDecoration(hintText: "ex.0982344***"),
                 ),
                 InkWell(
                   onTap: () =>
                       {setState(() => colorCheck = true), dialogGroup(context)},
-                  child: SizedBox(
+                  child: const SizedBox(
                     width: double.infinity,
                     height: 60,
                     child: Card(
@@ -1541,7 +1566,7 @@ class _PhoneTableState extends State<PhoneTable> {
           contentPadding: EdgeInsets.zero,
           content: StatefulBuilder(
             builder: (context, setState) => Container(
-              child: Container(
+              child: SizedBox(
                 width: 300,
                 height: MediaQuery.of(context).size.height * .6,
                 child: Column(
@@ -1551,21 +1576,21 @@ class _PhoneTableState extends State<PhoneTable> {
                       children: [
                         IconButton(
                             onPressed: () => Navigator.pop(context),
-                            icon: Icon(Icons.close)),
-                        Text("เลือกกลุ่มลูกค้า"),
+                            icon: const Icon(Icons.close)),
+                        const Text("เลือกกลุ่มลูกค้า"),
                         IconButton(
                           onPressed: () => showDialog(
                             context: context,
                             builder: (context) => AlertDialog(
                               title: TextField(
                                 controller: nameCate,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                     hintText: "ใส่ชื่อกลุ่มลูกค้า"),
                               ),
                               actions: [
                                 OutlinedButton(
                                     onPressed: () => Navigator.pop(context),
-                                    child: Text("ยกเลิก")),
+                                    child: const Text("ยกเลิก")),
                                 OutlinedButton(
                                     onPressed: () async => {
                                           await Cate.insertU(
@@ -1576,11 +1601,11 @@ class _PhoneTableState extends State<PhoneTable> {
                                           await grSelect(),
                                           Navigator.pop(context)
                                         },
-                                    child: Text('สร้างกลุ่ม'))
+                                    child: const Text('สร้างกลุ่ม'))
                               ],
                             ),
                           ),
-                          icon: Icon(Icons.add),
+                          icon: const Icon(Icons.add),
                           color: Colors.green,
                         ),
                       ],
@@ -1608,7 +1633,7 @@ class _PhoneTableState extends State<PhoneTable> {
                                       child: Center(
                                         child: Text(
                                           grCustomer[i]['name'][0],
-                                          style: TextStyle(fontSize: 30),
+                                          style: const TextStyle(fontSize: 30),
                                         ),
                                       ),
                                     ),
@@ -1692,12 +1717,12 @@ class _SearchWidgetState extends State<SearchWidget> {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.close,
               color: Colors.red,
             )),
         //
-        title: Text(
+        title: const Text(
           'ค้นหาด้วยรหัสสินค้า',
           style: TextStyle(color: Colors.black54, fontSize: 17),
         ),

@@ -173,7 +173,7 @@ class _PhoneSettingLayoutState extends State<PhoneSettingLayout> {
                     leading: Container(
                       width: 25,
                       height: 25,
-                      child: Image.asset('assets/icons/printer.jpg'),
+                      child: Image.asset('assets/icons/printer.png'),
                     ),
                     title: Text(
                       'ตั้งค่าเครื่องพิมพ์และเครื่องอ่านบาร์โค้ด',

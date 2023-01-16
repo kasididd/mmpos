@@ -1,10 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:mmpos/API/service_api.dart';
 import 'package:mmpos/auth/login_page.dart';
-import 'package:mmpos/auth/register_page.dart';
 
 class ForgotPage extends StatefulWidget {
   const ForgotPage({super.key});
