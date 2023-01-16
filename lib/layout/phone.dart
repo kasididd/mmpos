@@ -655,6 +655,7 @@ class _PhoneTableState extends State<PhoneTable> {
                                                     "name": nameCate.text
                                                   });
                                                   await Cate.insertU(
+                                                      provider: provider,
                                                       name: nameCate.text,
                                                       that_is: "cate",
                                                       color:
@@ -1563,8 +1564,9 @@ class _PhoneTableState extends State<PhoneTable> {
         context: context,
         builder: (context) => AlertDialog(
           contentPadding: EdgeInsets.zero,
-          content: StatefulBuilder(
-            builder: (context, setState) => Container(
+          content: StatefulBuilder(builder: (context, setState) {
+            Store provider = context.watch<Store>();
+            return Container(
               child: SizedBox(
                 width: 300,
                 height: MediaQuery.of(context).size.height * .6,
@@ -1593,6 +1595,7 @@ class _PhoneTableState extends State<PhoneTable> {
                                 OutlinedButton(
                                     onPressed: () async => {
                                           await Cate.insertU(
+                                              provider: provider,
                                               color: "",
                                               name: nameCate.text,
                                               that_is: "gr.customer"),
@@ -1647,8 +1650,8 @@ class _PhoneTableState extends State<PhoneTable> {
                   ],
                 ),
               ),
-            ),
-          ),
+            );
+          }),
         ),
       );
   grSelect() async {

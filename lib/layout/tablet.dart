@@ -878,9 +878,10 @@ class _TabletTableState extends State<TabletTable> {
           children: [
             for (int i = 0; i < getCate.length; i++)
               InkWell(
-                onTap: () => {
+                onTap: () async => {
                   setState(() => setSideBar = i),
                   cateSelect(provider),
+                  await selectAll(provider),
                   searcBarcode.clear()
                 },
                 onLongPress: () => showDialog(
@@ -949,184 +950,7 @@ class _TabletTableState extends State<TabletTable> {
                 ),
               ),
             InkWell(
-              onTap: () async => await showDialog<void>(
-                context: context,
-                builder: (BuildContext context) {
-                  int? selectedRadio = 0;
-                  return AlertDialog(
-                    content: StatefulBuilder(
-                      builder: (BuildContext context, StateSetter setState) {
-                        return Column(
-                          children: List<Widget>.generate(1, (int index) {
-                            return SizedBox(
-                              width: size.width * .4,
-                              height: size.height * .4,
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        IconButton(
-                                            onPressed: () =>
-                                                Navigator.of(context).pop(),
-                                            icon: const Icon(Icons.close)),
-                                        const Text('เพิ่มกลุ่มสินค้า'),
-                                        TextButton(
-                                            onPressed: () async {
-                                              if (nameCate.text.isNotEmpty) {
-                                                print(nameCate.text);
-                                                sideBar.add({
-                                                  "color":
-                                                      "${colorsPicked.red},${colorsPicked.green},${colorsPicked.blue}",
-                                                  "name": nameCate.text
-                                                });
-                                                print(colorsPicked);
-                                                await Cate.insertU(
-                                                    that_is: "cate",
-                                                    name: nameCate.text,
-                                                    color:
-                                                        "${colorsPicked.red},${colorsPicked.green},${colorsPicked.blue}");
-
-                                                await cateSelect(provider);
-                                                Navigator.of(context).pop();
-                                              } else {
-                                                showDialog(
-                                                  context: context,
-                                                  builder: (context) =>
-                                                      const AlertDialog(
-                                                          title: Text(
-                                                              "โปรดใส่ชื่อ!")),
-                                                );
-                                              }
-                                            },
-                                            child: const Text('บันทึก'))
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Text('ชื่อกลุ่มสินค้า'),
-                                        SizedBox(
-                                          width: 200,
-                                          height: 30,
-                                          child: TextField(
-                                            controller: nameCate,
-                                            decoration: const InputDecoration(
-                                                border: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  width: 3,
-                                                  color: Colors.blueAccent),
-                                            )),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Text('เลือกสีพื้นหลัง'),
-                                        GestureDetector(
-                                          onTap: () => showDialog(
-                                              context: context,
-                                              builder: (
-                                                BuildContext context,
-                                              ) {
-                                                return AlertDialog(
-                                                  title: SingleChildScrollView(
-                                                    child: SizedBox(
-                                                      width: size.width * .3,
-                                                      height: size.height * .5,
-                                                      child:
-                                                          SingleChildScrollView(
-                                                        child: BlockPicker(
-                                                          pickerColor:
-                                                              Colors.red,
-                                                          onColorChanged:
-                                                              (color) {
-                                                            setState(() {
-                                                              colorsPicked =
-                                                                  color;
-                                                            });
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
-                                                          },
-                                                          layoutBuilder:
-                                                              (context, colors,
-                                                                  child) {
-                                                            return GridView(
-                                                              physics:
-                                                                  const NeverScrollableScrollPhysics(),
-                                                              shrinkWrap: true,
-                                                              gridDelegate:
-                                                                  const SliverGridDelegateWithMaxCrossAxisExtent(
-                                                                maxCrossAxisExtent:
-                                                                    100,
-                                                                childAspectRatio:
-                                                                    1.0,
-                                                                crossAxisSpacing:
-                                                                    10,
-                                                                mainAxisExtent:
-                                                                    100,
-                                                                mainAxisSpacing:
-                                                                    10,
-                                                              ),
-                                                              children: [
-                                                                for (Color color
-                                                                    in colors)
-                                                                  child(color)
-                                                              ],
-                                                            );
-                                                          },
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                );
-                                              }),
-                                          child: Container(
-                                            width: 50,
-                                            height: 50,
-                                            color: colorsPicked != null
-                                                ? colorsPicked
-                                                : Colors.green[600],
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Text('เปิดใช้งาน'),
-                                        SizedBox(
-                                            width: 80,
-                                            height: 80,
-                                            child: Switch(
-                                              value: onOff,
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  onOff = !onOff;
-                                                });
-                                              },
-                                            )),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          }),
-                        );
-                      },
-                    ),
-                  );
-                },
-              ),
+              onTap: () async => await addCategory(size, provider),
               child: SizedBox(
                 width: double.infinity,
                 height: 100,
@@ -1143,6 +967,169 @@ class _TabletTableState extends State<TabletTable> {
           ],
         ),
       ),
+    );
+  }
+
+  addCategory(Size size, Store provider) async {
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        int? selectedRadio = 0;
+        return AlertDialog(
+          content: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return Column(
+                children: List<Widget>.generate(1, (int index) {
+                  return SizedBox(
+                    width: size.width * .4,
+                    height: size.height * .4,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              IconButton(
+                                  onPressed: () => Navigator.of(context).pop(),
+                                  icon: const Icon(Icons.close)),
+                              const Text('เพิ่มกลุ่มสินค้า'),
+                              TextButton(
+                                  onPressed: () async {
+                                    if (nameCate.text.isNotEmpty) {
+                                      print(nameCate.text);
+                                      sideBar.add({
+                                        "color":
+                                            "${colorsPicked.red},${colorsPicked.green},${colorsPicked.blue}",
+                                        "name": nameCate.text
+                                      });
+                                      print(colorsPicked);
+                                      await Cate.insertU(
+                                          provider: provider,
+                                          that_is: "cate",
+                                          name: nameCate.text,
+                                          color:
+                                              "${colorsPicked.red},${colorsPicked.green},${colorsPicked.blue}");
+
+                                      await cateSelect(provider);
+                                      nameCate.clear();
+                                      Navigator.of(context).pop();
+                                    } else {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => const AlertDialog(
+                                            title: Text("โปรดใส่ชื่อ!")),
+                                      );
+                                    }
+                                  },
+                                  child: const Text('บันทึก'))
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text('ชื่อกลุ่มสินค้า'),
+                              SizedBox(
+                                width: 200,
+                                height: 30,
+                                child: TextField(
+                                  controller: nameCate,
+                                  decoration: const InputDecoration(
+                                      border: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: 3, color: Colors.blueAccent),
+                                  )),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text('เลือกสีพื้นหลัง'),
+                              GestureDetector(
+                                onTap: () => showDialog(
+                                    context: context,
+                                    builder: (
+                                      BuildContext context,
+                                    ) {
+                                      return AlertDialog(
+                                        title: SingleChildScrollView(
+                                          child: SizedBox(
+                                            width: size.width * .3,
+                                            height: size.height * .5,
+                                            child: SingleChildScrollView(
+                                              child: BlockPicker(
+                                                pickerColor: Colors.red,
+                                                onColorChanged: (color) {
+                                                  setState(() {
+                                                    colorsPicked = color;
+                                                  });
+                                                  Navigator.of(context).pop();
+                                                },
+                                                layoutBuilder:
+                                                    (context, colors, child) {
+                                                  return GridView(
+                                                    physics:
+                                                        const NeverScrollableScrollPhysics(),
+                                                    shrinkWrap: true,
+                                                    gridDelegate:
+                                                        const SliverGridDelegateWithMaxCrossAxisExtent(
+                                                      maxCrossAxisExtent: 100,
+                                                      childAspectRatio: 1.0,
+                                                      crossAxisSpacing: 10,
+                                                      mainAxisExtent: 100,
+                                                      mainAxisSpacing: 10,
+                                                    ),
+                                                    children: [
+                                                      for (Color color
+                                                          in colors)
+                                                        child(color)
+                                                    ],
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }),
+                                child: Container(
+                                  width: 50,
+                                  height: 50,
+                                  color: colorsPicked != null
+                                      ? colorsPicked
+                                      : Colors.green[600],
+                                ),
+                              )
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text('เปิดใช้งาน'),
+                              SizedBox(
+                                  width: 80,
+                                  height: 80,
+                                  child: Switch(
+                                    value: onOff,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        onOff = !onOff;
+                                      });
+                                    },
+                                  )),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 

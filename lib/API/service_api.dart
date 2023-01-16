@@ -275,21 +275,22 @@ class Slip {
 }
 
 class Cate {
-  static Future insertU({
-    required String name,
-    required String color,
-    required String that_is,
-  }) async {
+  static Future insertU(
+      {required String name,
+      required String color,
+      required String that_is,
+      required Store provider}) async {
     try {
       var response = await http.post(Uri.parse(cateLink), body: {
         "action": "INSERT",
         "name": name,
         "color": color,
         "that_is": that_is,
-        "email": FirebaseAuth.instance.currentUser!.email
+        "email": provider.email['email']
       });
       if (response.statusCode == 200) {
         print(response.body);
+        print("insertt");
 
         return response.body;
       }
