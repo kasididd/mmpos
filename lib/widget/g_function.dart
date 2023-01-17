@@ -1,27 +1,16 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:http/http.dart' as http;
 import 'package:mmpos/API/service_api.dart';
-import 'package:mmpos/page/2-main_page.dart';
 import 'package:mmpos/provider/store.dart';
+import 'package:http/http.dart' as http;
 import 'package:mmpos/screen/7_product_screen.dart';
-import 'package:mmpos/src/add-product.dart';
-import 'package:mmpos/widget/drawer_widget.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:searchfield/searchfield.dart';
 
-class TabletTable extends StatefulWidget {
-  const TabletTable({super.key});
-
-  @override
-  State<TabletTable> createState() => _TabletTableState();
-}
-
-class _TabletTableState extends State<TabletTable> {
+class Order {
   TextEditingController val = TextEditingController();
   int sumAll = 0;
   bool err = false;
@@ -67,291 +56,8 @@ class _TabletTableState extends State<TabletTable> {
   List sideBar = [
     {"color": "234,122,322", "name": "Hello"}
   ];
-  @override
-  Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-    Store provider = context.watch<Store>();
-    if (getData) {
-      selectAll(provider);
-    }
-
-    return Scaffold(
-      //
-      backgroundColor: Colors.grey.shade200,
-      //
-      drawer: DrawerWidget(
-        provider: provider,
-      ),
-      //Appbar Start
-      appBar: AppBar(
-        //
-        backgroundColor: Colors.white,
-        toolbarHeight: 50,
-        //
-        leading: Builder(
-          builder: (context) => // Ensure Scaffold is in context
-              IconButton(
-                  icon: const Icon(
-                    Icons.menu,
-                    color: Colors.red,
-                  ),
-                  onPressed: () => Scaffold.of(context).openDrawer()),
-        ),
-        //
-        title: Container(
-          clipBehavior: Clip.antiAlias,
-          decoration: BoxDecoration(
-              // boxShadow: [
-              //   BoxShadow(blurRadius: 10, color: Colors.grey.shade300)
-              // ],
-
-              color: Colors.grey.shade200,
-              borderRadius: BorderRadius.circular(20)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5),
-                  child: Row(
-                    children: [
-                      //
-                      Expanded(
-                        flex: 3,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 5),
-                          child: SearchField(
-                            controller: search,
-                            searchInputDecoration: const InputDecoration(
-                              border: InputBorder.none,
-                              icon: Icon(Icons.search),
-                              hintText: 'ค้นหาสินค้าทั้งหมด...',
-                            ),
-                            itemHeight: 50,
-                            maxSuggestionsInViewPort: 7,
-                            suggestionsDecoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            suggestions: getItem
-                                .map(
-                                  (e) => SearchFieldListItem(e['name'],
-                                      item: e['name'],
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 20.0),
-                                        child: Text(e['name']),
-                                      )),
-                                )
-                                .toList(),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              //
-            ],
-          ),
-        ),
-        //
-        actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Container(
-                    child: InkWell(
-                      onTap: () => searchingByBarcode(),
-                      child: Column(
-                        children: [
-                          const Icon(
-                            Icons.search,
-                            color: Colors.red,
-                          ),
-                          const Text(
-                            'รหัสสินค้า',
-                            style: TextStyle(color: Colors.red, fontSize: 13),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                //
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Container(
-                    child: Column(
-                      children: [
-                        const Icon(
-                          Icons.point_of_sale_sharp,
-                          color: Colors.red,
-                        ),
-                        const Text(
-                          'เปิดลิ้นชัก',
-                          style: TextStyle(color: Colors.red, fontSize: 13),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                //
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Container(
-                    child: InkWell(
-                      onTap: () => coupon(),
-                      child: Column(
-                        children: [
-                          const Icon(
-                            CupertinoIcons.tickets,
-                            color: Colors.red,
-                          ),
-                          const Text(
-                            'ส่วนลดท้ายบิล',
-                            style: TextStyle(color: Colors.red, fontSize: 13),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                //
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: SizedBox(
-                    height: 50,
-                    child: Column(
-                      children: [
-                        const Icon(
-                          CupertinoIcons.square_arrow_down,
-                          color: Colors.red,
-                        ),
-                        const Text(
-                          'พักบิล & เรียกคืน',
-                          style: TextStyle(color: Colors.red, fontSize: 13),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                //
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: SizedBox(
-                    height: 50,
-                    child: InkWell(
-                      onTap: () => person(),
-                      child: Column(
-                        children: [
-                          const Icon(
-                            CupertinoIcons.person,
-                            color: Colors.red,
-                          ),
-                          const Text(
-                            'ลูกค้า',
-                            style: TextStyle(color: Colors.red, fontSize: 13),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
-      //Appbar Stop
-
-      body: Scaffold(
-          body: Row(
-        children: [
-          //Sildmenu Start
-
-          Container(
-            width: MediaQuery.of(context).size.width * 0.08,
-            height: double.infinity,
-            color: Colors.red,
-            child: sideBarItem(size, provider),
-          ),
-
-          //Sildmenu Stop
-
-          //Body Start
-
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.75,
-            height: double.infinity,
-            child: Column(
-              children: [
-                Expanded(
-                  child: Container(
-                    child: streamData(provider),
-                  ),
-                ),
-                //
-                Container(
-                  child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          //
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.75,
-                            height: 30,
-                            child: ElevatedButton(
-                                //
-                                style: ElevatedButton.styleFrom(
-                                    primary: Colors.white,
-                                    side: const BorderSide(color: Colors.red)),
-                                //
-                                onPressed: () {},
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Icon(
-                                      CupertinoIcons.barcode_viewfinder,
-                                      color: Colors.red,
-                                    ),
-                                    const Text(
-                                      'สแกน',
-                                      style: TextStyle(color: Colors.red),
-                                    )
-                                  ],
-                                )),
-                          )
-                          //
-                        ],
-                      )),
-                )
-                //
-              ],
-            ),
-          ),
-
-          //Body Stop
-
-          //Payment Start
-
-          SizedBox(
-              width: MediaQuery.of(context).size.width * 0.17,
-              height: double.infinity,
-              child: sideBarOrder(size, provider)),
-
-          //Payment Stop
-        ],
-      )),
-    );
-  }
-
-  SingleChildScrollView sideBarOrder(Size size, Store provider) {
+  ScrollController scrollController = ScrollController();
+  SizedBox sideBarOrder(Size size, Store provider, context) {
     slip(i) {
       // print(getSlip[i]['u_id']);
       return getItem.firstWhere(
@@ -359,243 +65,76 @@ class _TabletTableState extends State<TabletTable> {
           orElse: () => print('No matching element.'));
     }
 
-    return SingleChildScrollView(
-      child: SizedBox(
-        height: size.height * .9,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      width: double.infinity,
-                      height: 60,
-                      child: TextButton(
-                        child: Text(
-                          provider.table == null
-                              ? 'เลือกโต๊ะ'
-                              : provider.table.toString(),
-                          style:
-                              const TextStyle(color: Colors.red, fontSize: 15),
-                        ),
-                        onPressed: () async {
-                          await selectTable(provider);
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                                backgroundColor:
-                                    const Color.fromARGB(255, 255, 131, 131),
-                                content: SizedBox(
-                                  width: size.width * .6,
-                                  height: size.height * .7,
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          IconButton(
-                                              onPressed: () =>
-                                                  Navigator.pop(context),
-                                              icon: const Icon(
-                                                Icons.close,
-                                                color: Colors.red,
-                                              )),
-                                          const Text("เลือกโต๊ะ"),
-                                          IconButton(
-                                              onPressed: () =>
-                                                  tableSelect(context),
-                                              icon: const Icon(
-                                                Icons.add,
-                                                color: Colors.green,
-                                              ))
-                                        ],
-                                      ),
-                                      Expanded(
-                                          child: table.isNotEmpty
-                                              ? GridView.count(
-                                                  crossAxisCount: 6,
-                                                  children: [
-                                                    for (int i = 0;
-                                                        i < table.length;
-                                                        i++)
-                                                      GestureDetector(
-                                                        onLongPress: () =>
-                                                            TableAPI.delete(
-                                                                u_id: table[i]
-                                                                    ['u_id']),
-                                                        onTap: () {
-                                                          setState(() {
-                                                            provider.getTable(
-                                                                table[i]
-                                                                    ['name']);
-                                                          });
-                                                          Navigator.pop(
-                                                              context);
-                                                        },
-                                                        child: Card(
-                                                          child: Center(
-                                                              child: Text(
-                                                                  "${table[i]['name']}")),
-                                                        ),
-                                                      )
-                                                  ],
-                                                )
-                                              : const Text(''))
-                                    ],
-                                  ),
-                                )),
-                          );
-                        },
-                      ),
-                    ),
-                    Card(
-                      elevation: 0,
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text('รวมก่อนลด'),
-                              Text('$priceSum')
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text('THB'),
-                              Text(selled().toString())
-                            ],
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-                SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.redAccent),
-                        onPressed: err
-                            ? null
-                            : () async {
-                                await promPay();
-                                await showDialog<void>(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return payments(size);
-                                  },
-                                );
-                              },
-                        child: const Text('ชำระเงิน'))),
-                SizedBox(
-                  width: double.infinity,
-                  height: size.height * .6,
-                  child: (getSlip.isNotEmpty &&
-                          getItem.isNotEmpty &&
-                          slip(0) != null)
-                      ? ListView(
+    return SizedBox(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Card(
+                    elevation: 0,
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            for (int i = 0; i < getSlip.length; i++)
-                              ListTile(
-                                  leading: Container(
-                                      color: double.tryParse(
-                                                  slip(i)['image'][0]) ==
-                                              null
-                                          ? Colors.red
-                                          : readColor(slip(i)['image']),
-                                      width: 60,
-                                      height: 60,
-                                      child: double.tryParse(
-                                                  slip(i)['image'][0]) ==
-                                              null
-                                          ? Image.network(
-                                              slip(i)['image'],
-                                              fit: BoxFit.cover,
-                                            )
-                                          : const Text('')),
-                                  title: Text(slip(i)['name']),
-                                  subtitle: Text(slip(i)['price']),
-                                  trailing: GestureDetector(
-                                    onTap: () async {
-                                      await Slip.delete(
-                                          email: provider.email['email'],
-                                          u_id: getSlip[i]['u_id']);
-                                      await slipSlect(provider);
-                                      await sumCheck(i);
-                                    },
-
-                                    // print(dSlip(slip(i)['name'])['u_id']),
-                                    child: const Icon(
-                                      Icons.delete,
-                                    ),
-                                  )),
+                            const Text('รวมก่อนลด'),
+                            Text('$priceSum')
                           ],
-                        )
-                      : const Text(''),
-                ),
-              ],
-            ),
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: TextButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                          title: const Text(
-                            'ลบทั้งหมด',
-                            style: TextStyle(
-                                color: Colors.red, fontWeight: FontWeight.bold),
-                          ),
-                          content: const Text(
-                              'คุณต้องการลบสินค้าที่เลือกทั้งหมดหรือไม่'),
-                          actions: [
-                            TextButton(
-                                onPressed: () async {
-                                  await Slip.deleteAll(
-                                      email: provider.email['email']);
-                                  setState(() {
-                                    priceSum = 0;
-                                  });
-                                  await slipSlect(provider);
-                                  Navigator.pop(context);
-                                },
-                                child: const Text(
-                                  'ลบทั้งหมด',
-                                  style: TextStyle(
-                                      fontSize: 18, color: Colors.red),
-                                )),
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: const Text(
-                                  'ยกเลิก',
-                                  style: TextStyle(
-                                      fontSize: 18, color: Colors.blue),
-                                )),
-                          ]),
-                    );
-                  },
-                  child: const Text(
-                    'ลบทั้งหมด',
-                    style: TextStyle(
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16),
-                  )),
-            )
-          ],
-        ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text('THB'),
+                            Text(selled().toString())
+                          ],
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(
+                width: double.infinity,
+                height: size.height * .6,
+                child: (getSlip.isNotEmpty &&
+                        getItem.isNotEmpty &&
+                        slip(0) != null)
+                    ? ListView(
+                        controller: scrollController,
+                        children: [
+                          for (int i = 0; i < getSlip.length; i++)
+                            ListTile(
+                              leading: Container(
+                                  color: double.tryParse(slip(i)['image'][0]) ==
+                                          null
+                                      ? Colors.red
+                                      : readColor(slip(i)['image']),
+                                  width: 60,
+                                  height: 60,
+                                  child: double.tryParse(slip(i)['image'][0]) ==
+                                          null
+                                      ? Image.network(
+                                          slip(i)['image'],
+                                          fit: BoxFit.cover,
+                                        )
+                                      : const Text('')),
+                              title: Text(slip(i)['name']),
+                              subtitle: Text(slip(i)['price']),
+                            ),
+                        ],
+                      )
+                    : const Text(''),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -715,7 +254,7 @@ class _TabletTableState extends State<TabletTable> {
   }
 
 // sideBarItem mian1
-  Container sideBarItem(Size size, Store provider) {
+  Container sideBarItem(Size size, Store provider, context) {
     return Container(
       color: Colors.transparent,
       width: size.width * .1,
@@ -726,7 +265,7 @@ class _TabletTableState extends State<TabletTable> {
             for (int i = 0; i < getCate.length; i++)
               InkWell(
                 onTap: () async => {
-                  setState(() => setSideBar = i),
+                  setSideBar = i,
                   cateSelect(provider),
                   await selectAll(provider),
                   searcBarcode.clear()
@@ -739,15 +278,13 @@ class _TabletTableState extends State<TabletTable> {
                       OutlinedButton(
                           onPressed: () async {
                             if (getCate.length > 1) {
-                              setState(() {
-                                if (setSideBar != 0) {
-                                  setSideBar = setSideBar - 1;
-                                } else {
-                                  if (setSideBar.bitLength > 1) {
-                                    setSideBar = setSideBar + 1;
-                                  }
+                              if (setSideBar != 0) {
+                                setSideBar = setSideBar - 1;
+                              } else {
+                                if (setSideBar.bitLength > 1) {
+                                  setSideBar = setSideBar + 1;
                                 }
-                              });
+                              }
                               await Cate.delete(
                                   provider: provider,
                                   u_id: getCate[i]['u_id'],
@@ -797,7 +334,7 @@ class _TabletTableState extends State<TabletTable> {
                 ),
               ),
             InkWell(
-              onTap: () async => await addCategory(size, provider),
+              onTap: () async => await addCategory(size, provider, context),
               child: SizedBox(
                 width: double.infinity,
                 height: 100,
@@ -817,7 +354,7 @@ class _TabletTableState extends State<TabletTable> {
     );
   }
 
-  addCategory(Size size, Store provider) async {
+  addCategory(Size size, Store provider, context) async {
     showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -983,7 +520,6 @@ class _TabletTableState extends State<TabletTable> {
   selectAll(Store provider) async {
     print('ทำงานงาน');
     if (search.text.length != 0) {
-      print(search.text.length);
       await Future<void>.delayed(const Duration(hours: 1));
     }
     await Future.delayed(const Duration(milliseconds: 482));
@@ -997,20 +533,20 @@ class _TabletTableState extends State<TabletTable> {
         if (provider.item == null) {
           provider.getItem(res);
         }
-        setState(() {
-          getItem = res;
-          getData = false;
-        });
+        getItem = res;
+        getData = false;
       }
       // slipCrude
 
       await slipSlect(provider);
       await cateSelect(provider);
-      // print(res);
       sumCheck(0);
     } catch (e) {
       print("netwrok is err $e");
     }
+    if (scrollController.hasClients)
+      scrollController.animateTo(scrollController.position.maxScrollExtent,
+          curve: Curves.easeOut, duration: Duration(milliseconds: 200));
   }
 
   slipSlect(provider) async {
@@ -1022,10 +558,7 @@ class _TabletTableState extends State<TabletTable> {
     });
     var resSlip = jsonDecode(req.body);
     if (resSlip != getSlip) {
-      setState(() {
-        getSlip = resSlip;
-        print(getSlip);
-      });
+      getSlip = resSlip;
     }
   }
 
@@ -1175,11 +708,8 @@ class _TabletTableState extends State<TabletTable> {
 
   promPay() async {
     String res = await GetAPI.genQrProm(name: priceSum.toString());
-    print(sumAll.toString());
-    setState(() {
-      prompayImage = res;
-      prompay = true;
-    });
+    prompayImage = res;
+    prompay = true;
   }
 
   sumCheck(index) {
@@ -1205,10 +735,8 @@ class _TabletTableState extends State<TabletTable> {
         // print(response.body);
         var res = jsonDecode(response.body);
         if (res.isNotEmpty) {
-          setState(() {
-            getCate = res;
-            provider.getCate(getCate);
-          });
+          getCate = res;
+          provider.getCate(getCate);
         }
       }
     } catch (e) {
@@ -1228,7 +756,7 @@ class _TabletTableState extends State<TabletTable> {
     print("openIcon");
   }
 
-  searchingByBarcode() {
+  searchingByBarcode(context) {
     print("searchingByBarcode");
     showDialog(
       context: context,
@@ -1252,7 +780,7 @@ class _TabletTableState extends State<TabletTable> {
     );
   }
 
-  coupon() {
+  coupon(context) {
     var size = MediaQuery.of(context).size;
     print("searchingByBarcode");
     showDialog(
@@ -1475,36 +1003,33 @@ class _TabletTableState extends State<TabletTable> {
   selled() {
     if (amount && sell.text.isNotEmpty && int.parse(sell.text) > 0) {
       if ((priceSum - int.parse(sell.text)) >= 0) {
-        setState(() {
-          err = false;
-        });
+        err = false;
+
         return priceSum - int.parse(sell.text);
       }
-      setState(() {
-        err = true;
-      });
+
+      err = true;
+
       return "ส่วนลดมีค่ามากกว่าสินค้า!";
     }
     if (!amount && sell.text.isNotEmpty && int.parse(sell.text) > 0) {
       if (int.parse(sell.text) <= 100) {
-        setState(() {
-          err = false;
-        });
+        err = false;
+
         return priceSum - (priceSum * (int.parse(sell.text)) / 100);
       }
-      setState(() {
-        err = true;
-      });
+
+      err = true;
+
       return "ส่วนลดมีค่ามากกว่าสินค้า!";
     } else {
-      setState(() {
-        err = false;
-      });
+      err = false;
+
       return priceSum;
     }
   }
 
-  person() {
+  person(context) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -1777,8 +1302,6 @@ class _TabletTableState extends State<TabletTable> {
 
   selectTable(Store provider) async {
     table = await TableAPI.select(provider.email['email']);
-    setState(() {
-      table = table;
-    });
+    table = table;
   }
 }

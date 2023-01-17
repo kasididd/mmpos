@@ -19,12 +19,14 @@ class _WelcomePageState extends State<WelcomePage> {
   @override
   void initState() {
     super.initState();
-    Timer(
-        Duration(seconds: 3),
-        () => Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => login ? MainPage() : LoginPage())));
+    if (mounted) {
+      Timer(
+          Duration(seconds: 3),
+          () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => login ? MainPage() : LoginPage())));
+    }
   }
 
   bool login = false;
@@ -34,7 +36,7 @@ class _WelcomePageState extends State<WelcomePage> {
       await provider.hiveRe();
 
       if (provider.email != null) {
-        if (provider.email != "_") login = true;
+        if (provider.email['email'] != "logout") login = true;
         check = false;
         print(provider.email);
       }

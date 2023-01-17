@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:mmpos/API/service_api.dart';
 import 'package:http/http.dart' as http;
+import 'package:mmpos/layout/phone_payment.dart';
+import 'package:mmpos/models/phone_payment.dart';
 import 'package:mmpos/provider/store.dart';
 import 'package:mmpos/screen/7_product_screen.dart';
 import 'package:mmpos/src/add-product.dart';
@@ -280,14 +282,18 @@ class _PhoneTableState extends State<PhoneTable> {
                     );
                     //
                   },
-                  child: Row(
-                    //
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //
-                    children: const [
-                      Text('ตะกร้า 0 รายการ'),
-                      Text('THB 0.00'),
-                    ],
+                  child: InkWell(
+                    onTap: () => Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) => Old())),
+                    child: Row(
+                      //
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //
+                      children: const [
+                        Text('ตะกร้า 0 รายการ'),
+                        Text('THB 0.00'),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -347,122 +353,6 @@ class _PhoneTableState extends State<PhoneTable> {
             )
           ],
         ),
-      ),
-    );
-  }
-
-  SingleChildScrollView sideBarOrder(Size size) {
-    slip(i) {
-      // print(getSlip[i]['u_id']);
-      return getItem.firstWhere(
-          (element) => element['name'] == getSlip[i]['name_item'],
-          orElse: () => print('No matching element.'));
-    }
-
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                    width: double.infinity,
-                    height: 60,
-                    child: TextButton(
-                      child: const Text(
-                        'เลือกโต๊ะ',
-                        style: TextStyle(color: Colors.red, fontSize: 20),
-                      ),
-                      onPressed: () {
-                        print('can press');
-                      },
-                    ),
-                  ),
-                  Card(
-                    elevation: 0,
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text('รวมก่อนลด'),
-                            Text('$priceSum')
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text('รวมก่อนลด'),
-                            Text(selled().toString())
-                          ],
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-              SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.redAccent),
-                      onPressed: err
-                          ? null
-                          : () async {
-                              await promPay();
-                              await showDialog<void>(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return payments(size);
-                                },
-                              );
-                            },
-                      child: const Text('ชำระเงิน'))),
-              SizedBox(
-                width: double.infinity,
-                height: size.height * .6,
-                child: (getSlip.isNotEmpty &&
-                        getItem.isNotEmpty &&
-                        slip(0) != null)
-                    ? ListView(
-                        children: [
-                          for (int i = 0; i < getSlip.length; i++)
-                            ListTile(
-                                leading: Container(
-                                    color:
-                                        double.tryParse(slip(i)['image'][0]) ==
-                                                null
-                                            ? Colors.red
-                                            : readColor(slip(i)['image']),
-                                    width: 60,
-                                    height: 60,
-                                    child:
-                                        double.tryParse(slip(i)['image'][0]) ==
-                                                null
-                                            ? Image.network(
-                                                slip(i)['image'],
-                                                fit: BoxFit.cover,
-                                              )
-                                            : const Text('')),
-                                title: Text(slip(i)['name']),
-                                subtitle: Text(slip(i)['price']),
-                                trailing: GestureDetector(
-                                  onTap: () =>
-                                      Slip.delete(u_id: getSlip[i]['u_id']),
-                                  child: const Icon(
-                                    Icons.delete,
-                                  ),
-                                )),
-                        ],
-                      )
-                    : const Text(''),
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }
@@ -844,7 +734,7 @@ class _PhoneTableState extends State<PhoneTable> {
       }
       // slipCrude
       await cateSelect(provider);
-      await slipSlect();
+      await slipSlect(provider);
       await sumCheck(0);
       setState(() {
         provider.getItem(getItem);
@@ -856,12 +746,10 @@ class _PhoneTableState extends State<PhoneTable> {
     }
   }
 
-  slipSlect() async {
-    var req = await http
-        .post(Uri.parse("http://$config/mmposAPI/slip_crud.php"), body: {
-      "action": "GET_ALL",
-      "email": " FirebaseAuth.instance.currentUser!.email"
-    });
+  slipSlect(Store provider) async {
+    var req = await http.post(
+        Uri.parse("http://$config/mmposAPI/slip_crud.php"),
+        body: {"action": "GET_ALL", "email": provider.email['email']});
     var resSlip = jsonDecode(req.body);
     if (resSlip != getSlip) {
       setState(() {
@@ -897,7 +785,7 @@ class _PhoneTableState extends State<PhoneTable> {
   }
 
 // main2
-  FutureBuilder<dynamic> streamData(provider) {
+  FutureBuilder<dynamic> streamData(Store provider) {
     return FutureBuilder(
         builder: (context, snapshot) => snapshot.hasData
             ? const Center(
@@ -937,9 +825,10 @@ class _PhoneTableState extends State<PhoneTable> {
                                 onTap: () async {
                                   print('object');
                                   await Slip.insertU(
+                                      email: provider.email['email'],
                                       name_item: selectByCate()[index]['name'],
                                       sum: selectByCate()[index]['price']);
-                                  await slipSlect();
+                                  await slipSlect(provider);
                                   await sumCheck(index);
                                 },
                                 child: Card(

@@ -16,6 +16,7 @@ import 'package:mmpos/setting/backend/7-display.dart';
 import 'package:mmpos/setting/backend/8-user.dart';
 import 'package:mmpos/setting/backend/9-backup.dart';
 import 'package:mmpos/widget/drawer_widget.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 import 'settint_phone.dart';
@@ -160,6 +161,24 @@ class _TabletSettingLayoutState extends State<TabletSettingLayout> {
             ),
           ],
         ),
+        actions: [
+          if (currenIndex == 7)
+            TextButton(
+                onPressed: () {
+                  //
+                  showCupertinoModalBottomSheet(
+                    expand: true,
+                    context: context,
+                    backgroundColor: Colors.transparent,
+                    builder: (context) => addUser(),
+                  );
+                  //
+                },
+                child: Text(
+                  'เพิ่มพนักงาน',
+                  style: TextStyle(color: Colors.red, fontSize: 13),
+                ))
+        ],
         //
       ),
       //Appbar Stop

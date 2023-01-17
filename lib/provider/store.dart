@@ -208,6 +208,12 @@ class Store with ChangeNotifier {
     notifyListeners();
   }
 
+  List? order;
+  getOrder(get) {
+    order = get;
+    notifyListeners();
+  }
+
   List? item;
   getItem(get) {
     item = get;
@@ -251,7 +257,7 @@ class Store with ChangeNotifier {
     await Hive.initFlutter();
     await Hive.openBox('email');
     var emailHive = await Hive.box('email');
-    emailHive.deleteAt(0);
+    emailHive.put(0, {"email": "logout"});
     notifyListeners();
   }
 }

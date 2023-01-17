@@ -217,6 +217,7 @@ class Slip {
   static Future insertU({
     required String name_item,
     required String sum,
+    required String email,
   }) async {
     try {
       print('insert');
@@ -224,7 +225,7 @@ class Slip {
         "action": "INSERT",
         "name_item": name_item,
         "sum": sum,
-        "email": FirebaseAuth.instance.currentUser!.email
+        "email": email
       });
       if (response.statusCode == 200) {
         print(response.body);
@@ -236,23 +237,23 @@ class Slip {
     }
   }
 
-  static select() async {
+  static select({required Store provider}) async {
     var response = await http.post(Uri.parse(slipLink), body: {
       "action": "GET_ALL",
-      "email": FirebaseAuth.instance.currentUser!.email
+      "email": provider.email['email'],
+      "that_is": "cate",
     });
     if (response.statusCode == 200) {
       // print(response.body);
-
-      return jsonDecode(response.body);
+      var res = await jsonDecode(response.body);
+      provider.getOrder(res);
+      return res;
     }
   }
 
-  static deleteAll() async {
-    var response = await http.post(Uri.parse(slipLink), body: {
-      "action": "DELETE_All",
-      "email": FirebaseAuth.instance.currentUser!.email
-    });
+  static deleteAll({required String email}) async {
+    var response = await http.post(Uri.parse(slipLink),
+        body: {"action": "DELETE_All", "email": email});
     if (response.statusCode == 200) {
       // print(response.body);
 
@@ -260,12 +261,9 @@ class Slip {
     }
   }
 
-  static delete({required String u_id}) async {
-    var response = await http.post(Uri.parse(slipLink), body: {
-      "action": "DELETE",
-      "u_id": u_id,
-      "email": FirebaseAuth.instance.currentUser!.email
-    });
+  static delete({required String u_id, required String email}) async {
+    var response = await http.post(Uri.parse(slipLink),
+        body: {"action": "DELETE", "u_id": u_id, "email": email});
     if (response.statusCode == 200) {
       // print(response.body);
 

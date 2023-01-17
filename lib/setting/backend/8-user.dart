@@ -1,9 +1,8 @@
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -17,7 +16,7 @@ class UserSetting extends StatefulWidget {
 
 class _UserSettingState extends State<UserSetting> {
   bool user = false;
-
+  bool val = false;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -112,7 +111,37 @@ class _UserSettingState extends State<UserSetting> {
                 ),
               ),
             ),
-          )
+          ),
+          if (user)
+            Expanded(
+                child: ListView(
+              children: [
+                for (int i = 0; i < 10; i++)
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ListTile(
+                      leading: Container(
+                        color: Colors.redAccent,
+                        width: 100,
+                        height: 100,
+                      ),
+                      title: Row(
+                        children: [
+                          Expanded(flex: 1, child: Text("พนักงานสมชาย ภักดี ")),
+                          Expanded(flex: 1, child: Text("ID:someshy")),
+                        ],
+                      ),
+                      trailing: Switch(
+                          onChanged: (value) {
+                            setState(() {
+                              val = value;
+                            });
+                          },
+                          value: val),
+                    ),
+                  )
+              ],
+            ))
         ],
       ),
 
@@ -149,7 +178,7 @@ class _addUserState extends State<addUser> {
   bool prem16 = false;
   bool prem17 = false;
   //
-  XFile? imageUser;
+  File? imageUser;
   List? data;
   //
   @override
@@ -184,6 +213,7 @@ class _addUserState extends State<addUser> {
         actions: [
           TextButton(
               onPressed: () {
+                for (int i = 0; i < 10; i++) print(prem1);
                 Navigator.of(context).pop();
               },
               child: Text(
@@ -209,12 +239,14 @@ class _addUserState extends State<addUser> {
                       InkWell(
                         onTap: () async {
                           {
-                            final newimage = await ImagePicker()
-                                .pickImage(source: ImageSource.gallery);
+                            FilePickerResult? newimage = await FilePicker
+                                .platform
+                                .pickFiles(type: FileType.image);
                             if (newimage != null) {
                               final file = newimage;
                               setState(() {
-                                imageUser = file;
+                                imageUser =
+                                    File(file.files.first.path.toString());
                               });
                             } else {
                               return;
@@ -223,8 +255,8 @@ class _addUserState extends State<addUser> {
                         },
                         child: Container(
                           color: Colors.grey.shade200,
-                          width: 50,
-                          height: 50,
+                          width: 150,
+                          height: 150,
                           child: imageUser != null
                               ? Image.file(
                                   File(imageUser!.path),
