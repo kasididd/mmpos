@@ -214,6 +214,12 @@ class Store with ChangeNotifier {
     notifyListeners();
   }
 
+  List? emp;
+  getEmp(get) {
+    emp = get;
+    notifyListeners();
+  }
+
   List? item;
   getItem(get) {
     item = get;

@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mmpos/src/print/printer_add.dart';
 import 'package:pdf/widgets.dart';
 
 import '../provider/store.dart';
@@ -407,6 +408,73 @@ class CustomerAPI {
   }
 }
 
+class EmpApi {
+  static String empLink = "http://$config/mmposAPI/employee.php";
+  Future insertU({
+    required String fname,
+    required String lname,
+    required String tel,
+    required String sex,
+    required String c_group,
+    required String email,
+  }) async {
+    try {
+      print("sending");
+      var response = await http.post(Uri.parse(empLink), body: {
+        "action": "INSERT",
+        "email": email,
+        "fname": fname,
+        "lname": lname,
+        "tel": tel,
+        "sex": sex,
+        "c_group": c_group,
+      });
+      if (response.statusCode == 200) {
+        print("sendsucess");
+        print(response.body);
+
+        return response.body;
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  select({required String email, required Store provider}) async {
+    var response = await http.post(Uri.parse(empLink), body: {
+      "action": "GET_ALL",
+      "email": email,
+    });
+    if (response.statusCode == 200) {
+      // print(response.body);
+      List res = await jsonDecode(response.body);
+      provider.getEmp(res);
+      return;
+    }
+  }
+
+  deleteAll() async {
+    var response = await http.post(Uri.parse(empLink), body: {
+      "action": "DELETE_All",
+    });
+    if (response.statusCode == 200) {
+      // print(response.body);
+
+      return response.body;
+    }
+  }
+
+  delete({required u_id}) async {
+    var response = await http
+        .post(Uri.parse(empLink), body: {"action": "DELETE", "u_id": u_id});
+    if (response.statusCode == 200) {
+      // print(response.body);
+
+      return response.body;
+    }
+  }
+}
+
 class TableAPI {
   static String tableLink = "http://$config/mmposAPI/table_list.php";
   static Future insertU({
@@ -466,31 +534,31 @@ class UserStore {
   static String userLink = "http://$config/mmposAPI/user.php";
   static String userLoginLink = "http://$config/mmposAPI/login.php";
   static String tokenLink = "http://$config/mmposAPI/change_password/token.php";
-  static Future update({
-    required String image,
-    required String type_store,
-    required String tax_id,
-    required String pos_id,
-    required String branch,
-    required String m_id,
-    required String time_open,
-    required String time_close,
-    required String tax_val,
-    required String service_chage,
-    required String is_doble,
-    required String adress1_2,
-    required String tel,
-    required String name_store,
-    required String tel_promt,
-    required String setting,
-    required String u_id,
-  }) async {
+  static Future update(
+      {required String image,
+      required String type_store,
+      required String tax_id,
+      required String pos_id,
+      required String branch,
+      required String m_id,
+      required String time_open,
+      required String time_close,
+      required String tax_val,
+      required String service_chage,
+      required String is_doble,
+      required String adress1_2,
+      required String tel,
+      required String name_store,
+      required String tel_promt,
+      required String setting,
+      required String u_id,
+      required String email}) async {
     try {
       print("sending");
       var response = await http.post(Uri.parse(userLink), body: {
         "action": "UPDATE",
         "u_id": u_id,
-        "email": FirebaseAuth.instance.currentUser!.email,
+        "email": email,
         "name_store": name_store,
         "branch": branch,
         "tel_promt": tel_promt,
@@ -550,6 +618,26 @@ class UserStore {
         // print(response.body);
 
         return jsonDecode(response.body);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  static getStore({
+    required Store provider,
+  }) async {
+    try {
+      var response = await http.post(Uri.parse(userLoginLink), body: {
+        "action": "GETDATA",
+        "email": provider.email['email'],
+      });
+      if (response.statusCode == 200) {
+        // print(response.body);
+
+        var res = await jsonDecode(response.body);
+        provider.getUserData(res);
+        return;
       }
     } catch (e) {
       print(e);

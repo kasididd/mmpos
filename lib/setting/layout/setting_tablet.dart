@@ -170,7 +170,7 @@ class _TabletSettingLayoutState extends State<TabletSettingLayout> {
                     expand: true,
                     context: context,
                     backgroundColor: Colors.transparent,
-                    builder: (context) => addUser(),
+                    builder: (context) => addUser(isUpdate: false),
                   );
                   //
                 },
@@ -182,13 +182,13 @@ class _TabletSettingLayoutState extends State<TabletSettingLayout> {
         //
       ),
       //Appbar Stop
-      body: SingleChildScrollView(
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height,
-          child: Row(
-            children: [
-              Expanded(
-                  flex: 2,
+      body: SizedBox(
+        height: MediaQuery.of(context).size.height,
+        child: Row(
+          children: [
+            Expanded(
+                flex: 2,
+                child: SingleChildScrollView(
                   child: Column(
                     children: [
                       //Card 1 Start
@@ -265,10 +265,10 @@ class _TabletSettingLayoutState extends State<TabletSettingLayout> {
                         ),
                       )
                     ],
-                  )),
-              Expanded(flex: 5, child: listPage[currenIndex]),
-            ],
-          ),
+                  ),
+                )),
+            Expanded(flex: 5, child: listPage[currenIndex]),
+          ],
         ),
       ),
     );

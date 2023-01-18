@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -6,9 +7,12 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mmpos/API/service_api.dart';
 import 'package:mmpos/provider/store.dart';
 import 'package:mmpos/src/round/round_setting.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class ShopSetting extends StatefulWidget {
   const ShopSetting({
@@ -19,20 +23,63 @@ class ShopSetting extends StatefulWidget {
 }
 
 class _ShopSettingState extends State<ShopSetting> {
-  List? data;
+  List data = [[]];
   bool tax = false;
   bool bill = false;
   XFile? imageSetting;
-  //
-  int select = 0;
+  String? imageAdd;
+  String? image;
   String type_store = "ร้านค้าทั่วไป";
+  TextEditingController name = TextEditingController(text: "MMPOS");
+  TextEditingController tax_id = TextEditingController();
+  TextEditingController pos_id = TextEditingController();
+  TextEditingController branch = TextEditingController();
+  TextEditingController m_id = TextEditingController();
+  TextEditingController time_open = TextEditingController();
+  TextEditingController time_close = TextEditingController();
+  TextEditingController tax_val = TextEditingController();
+  TextEditingController service_chage = TextEditingController();
+  TextEditingController adress1 = TextEditingController();
+  TextEditingController adress2 = TextEditingController();
+  TextEditingController tel = TextEditingController();
+  int is_doble = 0;
+  bool check = true;
+  int select = 0;
+  XFile? imagePicked;
+
   //
 
   //
+
+  //
+  Future<void> uploadImage() async {
+    try {
+      List<int> imageBytes =
+          File(imagePicked!.path.toString()).readAsBytesSync();
+      String baseimage = base64Encode(imageBytes);
+      // print('$imageName');
+      imageAdd = "${name.text}.${imagePicked!.path.split('.').last}";
+      var response = await http.post(
+          Uri.parse('http://$config/mmposAPI/crud_mmpos.php'),
+          body: {'image': baseimage, 'name': imageAdd});
+      if (response.statusCode == 200) {
+        print(response.body);
+        setState(() {
+          image = "http://$config/mmposAPI/image/$imageAdd";
+        });
+      } else {
+        print("Error during connection to server");
+      }
+    } catch (e) {
+      print("$e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-
+    Store provider = context.watch<Store>();
+    if (check) getData(provider);
     return Scaffold(
       //
       backgroundColor: Colors.grey.shade200,
@@ -70,6 +117,77 @@ class _ShopSettingState extends State<ShopSetting> {
               ),
               centerTitle: true,
               //
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: IconButton(
+                    onPressed: () async {
+                      await uploadImage();
+                      if (image != null ||
+                          data[0]['image'].length > 10 &&
+                              type_store != null &&
+                              tax_id.text.length > 0 &&
+                              pos_id.text.length > 0 &&
+                              branch.text.length > 0 &&
+                              m_id.text.length > 0 &&
+                              time_open.text.length > 0 &&
+                              time_close.text.length > 0 &&
+                              tax_val.text.length > 0 &&
+                              service_chage.text.length > 0 &&
+                              adress1.text.length > 0 &&
+                              adress2.text.length > 0 &&
+                              tel.text.length > 0 &&
+                              name.text.length > 0 &&
+                              tel.text.length > 0) {
+                        String adress1_2 = "${adress1.text},${adress2.text}";
+                        await UserStore.update(
+                          email: provider.email['email'],
+                          setting: type_store,
+                          u_id: data![0]['u_id'],
+                          image: image != null ? image : data![0]['image'],
+                          type_store: select.toString(),
+                          tax_id: tax_id.text,
+                          pos_id: pos_id.text,
+                          branch: branch.text,
+                          m_id: m_id.text,
+                          time_open: time_open.text,
+                          time_close: time_close.text,
+                          tax_val: tax_val.text,
+                          service_chage: service_chage.text,
+                          is_doble: is_doble.toString(),
+                          adress1_2: adress1_2,
+                          tel: tel.text,
+                          name_store: name.text,
+                          tel_promt: tel.text,
+                        );
+                        await getData(provider);
+                        await showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                              title: Text(
+                            "สำเร็จ!",
+                            style: TextStyle(fontSize: 24),
+                          )),
+                        );
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                              title: Text(
+                            "กรุณาใส่ข้อมูลให้ครบ!",
+                            style: TextStyle(fontSize: 24),
+                          )),
+                        );
+                      }
+                    },
+                    icon: Icon(
+                      Icons.save,
+                      size: 40,
+                    ),
+                    color: Colors.green,
+                  ),
+                )
+              ],
             ),
       //Appbar Stop
 
@@ -148,6 +266,7 @@ class _ShopSettingState extends State<ShopSetting> {
                             width: 200,
                             height: 40,
                             child: TextField(
+                              controller: name,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -206,6 +325,7 @@ class _ShopSettingState extends State<ShopSetting> {
                             width: 200,
                             height: 40,
                             child: TextField(
+                              controller: tax_id,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -235,6 +355,7 @@ class _ShopSettingState extends State<ShopSetting> {
                             width: 200,
                             height: 40,
                             child: TextField(
+                              controller: pos_id,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -264,6 +385,7 @@ class _ShopSettingState extends State<ShopSetting> {
                             width: 90,
                             height: 40,
                             child: TextField(
+                              controller: branch,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -282,6 +404,7 @@ class _ShopSettingState extends State<ShopSetting> {
                             width: 90,
                             height: 40,
                             child: TextField(
+                              controller: m_id,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -311,6 +434,7 @@ class _ShopSettingState extends State<ShopSetting> {
                             width: 90,
                             height: 40,
                             child: TextField(
+                              controller: time_open,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -329,6 +453,7 @@ class _ShopSettingState extends State<ShopSetting> {
                             width: 90,
                             height: 40,
                             child: TextField(
+                              controller: time_close,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -370,6 +495,7 @@ class _ShopSettingState extends State<ShopSetting> {
                           width: 100,
                           height: 40,
                           child: TextField(
+                            controller: tax_val,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -458,6 +584,7 @@ class _ShopSettingState extends State<ShopSetting> {
                           width: 110,
                           height: 40,
                           child: TextField(
+                            controller: service_chage,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -533,6 +660,7 @@ class _ShopSettingState extends State<ShopSetting> {
                           width: 200,
                           height: 40,
                           child: TextField(
+                            controller: adress1,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -562,6 +690,7 @@ class _ShopSettingState extends State<ShopSetting> {
                           width: 200,
                           height: 40,
                           child: TextField(
+                            controller: adress2,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -591,6 +720,7 @@ class _ShopSettingState extends State<ShopSetting> {
                           width: 200,
                           height: 40,
                           child: TextField(
+                            controller: tel,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -642,5 +772,38 @@ class _ShopSettingState extends State<ShopSetting> {
         ),
       ),
     );
+  }
+
+  getData(Store provider) async {
+    if (!check) await UserStore.getStore(provider: provider);
+    setState(() {
+      data[0] = provider.userData![0];
+      print("userData ${provider.userData}");
+      print("emial: ${provider.email}");
+    });
+    try {
+      setState(() {
+        print('เริ่ม...');
+        List adress = data![0]['adress1_2'].toString().split(",");
+        name = TextEditingController(text: data![0]['name_store']);
+        tax_id = TextEditingController(text: data![0]['tax_id']);
+        pos_id = TextEditingController(text: data![0]['pos_id']);
+        branch = TextEditingController(text: data![0]['branch']);
+        m_id = TextEditingController(text: data![0]['m_id']);
+        time_open = TextEditingController(text: data![0]['time_open']);
+        time_close = TextEditingController(text: data![0]['time_close']);
+        tax_val = TextEditingController(text: data![0]['tax_val']);
+        service_chage = TextEditingController(text: data![0]['service_chage']);
+        is_doble = int.parse(data![0]['is_doble']);
+        adress1 = TextEditingController(text: adress[0]);
+        adress2 = TextEditingController(text: adress[1]);
+        tel = TextEditingController(text: data![0]['tel_promt']);
+        // name.value = TextEditingValue(text: "ANY TEXT");
+        check = false;
+        print('อัปเดทข้อมูลแล้ว➕');
+      });
+    } catch (e) {
+      print("ไม่สามารถดึงข้อมูลจากUserStoreได้เพราะ: $e");
+    }
   }
 }

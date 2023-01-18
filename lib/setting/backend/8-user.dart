@@ -5,7 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mmpos/API/service_api.dart';
+import 'package:mmpos/provider/store.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:provider/provider.dart';
 
 class UserSetting extends StatefulWidget {
   const UserSetting({super.key});
@@ -15,11 +18,24 @@ class UserSetting extends StatefulWidget {
 }
 
 class _UserSettingState extends State<UserSetting> {
-  bool user = false;
-  bool val = false;
+  bool user = true;
+  bool val = true;
+  EmpApi emp = new EmpApi();
+  bool check = true;
+  getEmp(Store provider) async {
+    print("get");
+    // await Future.delayed(Duration(seconds: 2));
+    var res = emp.select(email: provider.email['email'], provider: provider);
+    print(provider.emp);
+    check = false;
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
+    Store provider = context.watch<Store>();
+    if (check) getEmp(provider);
     return Scaffold(
       //
       backgroundColor: Colors.grey.shade200,
@@ -65,7 +81,7 @@ class _UserSettingState extends State<UserSetting> {
                         expand: true,
                         context: context,
                         backgroundColor: Colors.transparent,
-                        builder: (context) => addUser(),
+                        builder: (context) => addUser(isUpdate: false),
                       );
                       //
                     },
@@ -116,28 +132,32 @@ class _UserSettingState extends State<UserSetting> {
             Expanded(
                 child: ListView(
               children: [
-                for (int i = 0; i < 10; i++)
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ListTile(
-                      leading: Container(
-                        color: Colors.redAccent,
-                        width: 100,
-                        height: 100,
-                      ),
-                      title: Row(
-                        children: [
-                          Expanded(flex: 1, child: Text("พนักงานสมชาย ภักดี ")),
-                          Expanded(flex: 1, child: Text("ID:someshy")),
-                        ],
-                      ),
-                      trailing: Switch(
-                          onChanged: (value) {
-                            setState(() {
-                              val = value;
-                            });
-                          },
-                          value: val),
+                for (int i = 0; i < provider.emp!.length; i++)
+                  InkWell(
+                    onTap: () => showCupertinoModalBottomSheet(
+                      expand: true,
+                      context: context,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) => addUser(isUpdate: true),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ListTile(
+                          leading: Container(
+                            width: 100,
+                            height: 100,
+                            child: Container(
+                                color: Colors.grey.shade400,
+                                child: provider.emp![i]['email'] == 0
+                                    ? Image.network(
+                                        "http://$config/mmposAPI/image/defualImage.png")
+                                    : Image.network(
+                                        provider.emp![i]['image'],
+                                        fit: BoxFit.fitHeight,
+                                      )),
+                          ),
+                          title: Text(provider.emp![i]['e_name']),
+                          trailing: Icon(Icons.arrow_forward_ios)),
                     ),
                   )
               ],
@@ -153,8 +173,8 @@ class _UserSettingState extends State<UserSetting> {
 //
 
 class addUser extends StatefulWidget {
-  const addUser({super.key});
-
+  const addUser({super.key, required this.isUpdate});
+  final bool isUpdate;
   @override
   State<addUser> createState() => _addUserState();
 }
@@ -181,8 +201,10 @@ class _addUserState extends State<addUser> {
   File? imageUser;
   List? data;
   //
+
   @override
   Widget build(BuildContext context) {
+    if (widget.isUpdate) print("isUpdate");
     return Scaffold(
       //
       backgroundColor: Colors.grey.shade300,
@@ -213,7 +235,6 @@ class _addUserState extends State<addUser> {
         actions: [
           TextButton(
               onPressed: () {
-                for (int i = 0; i < 10; i++) print(prem1);
                 Navigator.of(context).pop();
               },
               child: Text(

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:mmpos/API/service_api.dart';
 import 'package:mmpos/auth/login_page.dart';
 import 'package:mmpos/page/2-main_page.dart';
 import 'package:mmpos/provider/store.dart';
@@ -36,7 +37,11 @@ class _WelcomePageState extends State<WelcomePage> {
       await provider.hiveRe();
 
       if (provider.email != null) {
-        if (provider.email['email'] != "logout") login = true;
+        if (provider.email['email'] != "logout") {
+          await UserStore.getStore(provider: provider);
+
+          login = true;
+        }
         check = false;
         print(provider.email);
       }
