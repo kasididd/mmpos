@@ -170,7 +170,8 @@ class _TabletSettingLayoutState extends State<TabletSettingLayout> {
                     expand: true,
                     context: context,
                     backgroundColor: Colors.transparent,
-                    builder: (context) => addUser(isUpdate: false),
+                    builder: (context) =>
+                        const addUser(isUpdate: false, data: null),
                   );
                   //
                 },

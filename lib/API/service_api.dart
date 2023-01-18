@@ -409,28 +409,59 @@ class CustomerAPI {
 }
 
 class EmpApi {
-  static String empLink = "http://$config/mmposAPI/employee.php";
+  String empLink = "http://$config/mmposAPI/employee.php";
   Future insertU({
-    required String fname,
-    required String lname,
-    required String tel,
-    required String sex,
-    required String c_group,
+    required String e_name,
+    required String e_pass,
+    required String setting1,
+    required String setting2,
+    required String image,
     required String email,
   }) async {
     try {
       print("sending");
       var response = await http.post(Uri.parse(empLink), body: {
         "action": "INSERT",
+        "e_name": e_name,
+        "e_pass": e_pass,
+        "setting1": setting1,
+        "setting2": setting2,
+        "image": image,
         "email": email,
-        "fname": fname,
-        "lname": lname,
-        "tel": tel,
-        "sex": sex,
-        "c_group": c_group,
       });
       if (response.statusCode == 200) {
         print("sendsucess");
+        print(response.body);
+
+        return response.body;
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future update({
+    required String u_id,
+    required String e_name,
+    required String e_pass,
+    required String setting1,
+    required String setting2,
+    required String image,
+    required String email,
+  }) async {
+    try {
+      print("updating");
+      var response = await http.post(Uri.parse(empLink), body: {
+        "action": "UPDATE",
+        "u_id": u_id,
+        "e_name": e_name,
+        "e_pass": e_pass,
+        "setting1": setting1,
+        "setting2": setting2,
+        "image": image,
+        "email": email,
+      });
+      if (response.statusCode == 200) {
         print(response.body);
 
         return response.body;
@@ -464,12 +495,12 @@ class EmpApi {
     }
   }
 
-  delete({required u_id}) async {
-    var response = await http
-        .post(Uri.parse(empLink), body: {"action": "DELETE", "u_id": u_id});
+  delete({required String u_id, required String email}) async {
+    var response = await http.post(Uri.parse(empLink),
+        body: {"action": "DELETE", "u_id": u_id, "email": email});
     if (response.statusCode == 200) {
       // print(response.body);
-
+      print(response.body);
       return response.body;
     }
   }

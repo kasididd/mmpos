@@ -3,10 +3,12 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mmpos/API/service_api.dart';
 import 'package:mmpos/provider/store.dart';
+import 'package:mmpos/widget/g_function.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
@@ -26,7 +28,6 @@ class _UserSettingState extends State<UserSetting> {
     print("get");
     // await Future.delayed(Duration(seconds: 2));
     var res = emp.select(email: provider.email['email'], provider: provider);
-    print(provider.emp);
     check = false;
   }
 
@@ -81,7 +82,8 @@ class _UserSettingState extends State<UserSetting> {
                         expand: true,
                         context: context,
                         backgroundColor: Colors.transparent,
-                        builder: (context) => addUser(isUpdate: false),
+                        builder: (context) =>
+                            const addUser(isUpdate: false, data: null),
                       );
                       //
                     },
@@ -95,75 +97,95 @@ class _UserSettingState extends State<UserSetting> {
 
       //
 
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 25),
-            child: Card(
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('ระบบพนักงาน'),
-                    //Switch Start
-                    FlutterSwitch(
-                      height: 20.0,
-                      width: 40.0,
-                      padding: 4.0,
-                      toggleSize: 15.0,
-                      borderRadius: 10.0,
-                      activeColor: Colors.red,
-                      value: user,
-                      onToggle: (value) {
-                        setState(() {
-                          user = value;
-                        });
-                      },
-                    ),
-                    //Switch Stop
-                  ],
-                ),
-              ),
-            ),
-          ),
-          if (user)
-            Expanded(
-                child: ListView(
+      body: provider.emp == null
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : Column(
               children: [
-                for (int i = 0; i < provider.emp!.length; i++)
-                  InkWell(
-                    onTap: () => showCupertinoModalBottomSheet(
-                      expand: true,
-                      context: context,
-                      backgroundColor: Colors.transparent,
-                      builder: (context) => addUser(isUpdate: true),
-                    ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 25),
+                  child: Card(
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ListTile(
-                          leading: Container(
-                            width: 100,
-                            height: 100,
-                            child: Container(
-                                color: Colors.grey.shade400,
-                                child: provider.emp![i]['email'] == 0
-                                    ? Image.network(
-                                        "http://$config/mmposAPI/image/defualImage.png")
-                                    : Image.network(
-                                        provider.emp![i]['image'],
-                                        fit: BoxFit.fitHeight,
-                                      )),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 25, vertical: 5),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('ระบบพนักงาน'),
+                          //Switch Start
+                          FlutterSwitch(
+                            height: 20.0,
+                            width: 40.0,
+                            padding: 4.0,
+                            toggleSize: 15.0,
+                            borderRadius: 10.0,
+                            activeColor: Colors.red,
+                            value: user,
+                            onToggle: (value) {
+                              setState(() {
+                                user = value;
+                              });
+                            },
                           ),
-                          title: Text(provider.emp![i]['e_name']),
-                          trailing: Icon(Icons.arrow_forward_ios)),
+                          //Switch Stop
+                        ],
+                      ),
                     ),
-                  )
+                  ),
+                ),
+                if (user)
+                  Expanded(
+                      child: ListView(
+                    children: [
+                      for (int i = 0; i < provider.emp!.length; i++)
+                        Slidable(
+                          endActionPane:
+                              ActionPane(motion: StretchMotion(), children: [
+                            SlidableAction(
+                              onPressed: (context) async => {
+                                await EmpApi().delete(
+                                    u_id: provider.emp![i]['u_id'],
+                                    email: provider.email['email']),
+                                await getEmp(provider)
+                              },
+                              icon: Icons.delete,
+                              backgroundColor: Colors.red,
+                            )
+                          ]),
+                          child: InkWell(
+                            onTap: () => showCupertinoModalBottomSheet(
+                              expand: true,
+                              context: context,
+                              backgroundColor: Colors.transparent,
+                              builder: (context) => addUser(
+                                  isUpdate: true, data: provider.emp![i]),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ListTile(
+                                  leading: Container(
+                                    width: 80,
+                                    height: 100,
+                                    child: Container(
+                                        color: Colors.grey.shade400,
+                                        child: provider.emp![i]['image'] == "0"
+                                            ? Image.network(
+                                                "http://$config/mmposAPI/image/defualImage.png")
+                                            : Image.network(
+                                                provider.emp![i]['image'],
+                                                fit: BoxFit.fitHeight,
+                                              )),
+                                  ),
+                                  title: Text(provider.emp![i]['e_name']),
+                                  trailing: Icon(Icons.arrow_forward_ios)),
+                            ),
+                          ),
+                        )
+                    ],
+                  ))
               ],
-            ))
-        ],
-      ),
+            ),
 
       //
     );
@@ -173,38 +195,62 @@ class _UserSettingState extends State<UserSetting> {
 //
 
 class addUser extends StatefulWidget {
-  const addUser({super.key, required this.isUpdate});
+  const addUser({super.key, required this.isUpdate, required this.data});
   final bool isUpdate;
+  final dynamic data;
   @override
   State<addUser> createState() => _addUserState();
 }
 
 class _addUserState extends State<addUser> {
-  bool prem1 = false;
-  bool prem2 = false;
-  bool prem3 = false;
-  bool prem4 = false;
-  bool prem5 = false;
-  bool prem6 = false;
-  bool prem7 = false;
-  bool prem8 = false;
-  bool prem9 = false;
-  bool prem10 = false;
-  bool prem11 = false;
-  bool prem12 = false;
-  bool prem13 = false;
-  bool prem14 = false;
-  bool prem15 = false;
-  bool prem16 = false;
-  bool prem17 = false;
   //
+  TextEditingController e_name = TextEditingController();
+  TextEditingController e_pass = TextEditingController();
   File? imageUser;
+  PlatformFile? imageToUp;
   List? data;
+  List setting2 = [
+    "สร้างเอกสารรับเข้า",
+    "แก้ไขเอกสารรับเข้า",
+    "สร้างเอกสารจ่ายออก",
+    "แก้ไขเอกสารจ่ายออก",
+    "ปรับปรุงสต๊อก",
+  ];
+  List setting1 = [
+    "จัดการสินค้า",
+    "จัดการบิล",
+    "ยกเลิกการขาย",
+    "จัดการคลังสินค้า",
+    "เรียกดูรายงาน",
+    "ลูกค้า",
+    "การตั้งค่า",
+    "เปิดลิ้นชักเก็บเงิน",
+    "พนักงาน",
+    "แสดงกำไรที่ได้",
+  ];
+  String Vsetting1 = "0000000000";
+  String Vsetting2 = "00000";
+  List valSetting1 = List.generate(10, (index) => false);
+  List valSetting2 = List.generate(5, (index) => false);
   //
-
+  bool check = false;
+  bool updateCheck = true;
   @override
   Widget build(BuildContext context) {
     if (widget.isUpdate) print("isUpdate");
+    Store provider = context.watch<Store>();
+    if (widget.data != null && updateCheck) {
+      setState(() {
+        e_name = TextEditingController(text: widget.data['e_name']);
+        e_pass = TextEditingController(text: widget.data['e_pass']);
+        for (int i = 0; i < 10; i++)
+          valSetting1[i] = widget.data['setting1'][i] == "0" ? false : true;
+        for (int i = 0; i < 5; i++)
+          valSetting2[i] = widget.data['setting2'][i] == "0" ? false : true;
+        updateCheck = false;
+      });
+    }
+    getVal();
     return Scaffold(
       //
       backgroundColor: Colors.grey.shade300,
@@ -227,16 +273,52 @@ class _addUserState extends State<addUser> {
             )),
         //
         title: Text(
-          'เพิ่มพนักงาน',
+          widget.isUpdate ? "แก้ไขข้อมูลพนักงาน" : 'เพิ่มพนักงาน',
           style: TextStyle(color: Colors.black54, fontSize: 17),
         ),
         centerTitle: true,
         //
         actions: [
           TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+              onPressed: e_name.text.isEmpty || e_pass.text.isEmpty
+                  ? () => showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text('ใส่ข้อมูล ชื่อ และ รหัส'),
+                        ),
+                      )
+                  : () async {
+                      if (imageToUp != null)
+                        await new ImageUpload().uploadImage(
+                            name: e_name.text,
+                            image: imageToUp!,
+                            provider: provider);
+                      widget.data == null
+                          ? await new EmpApi().insertU(
+                              e_name: e_name.text,
+                              e_pass: e_pass.text,
+                              setting1: Vsetting1,
+                              setting2: Vsetting2,
+                              image: imageToUp == null
+                                  ? "0"
+                                  : provider.imageAddress.toString(),
+                              email: provider.email['email'])
+                          : await new EmpApi().update(
+                              u_id: widget.data['u_id'],
+                              e_name: e_name.text,
+                              e_pass: e_pass.text,
+                              setting1: Vsetting1,
+                              setting2: Vsetting2,
+                              image: imageToUp == null
+                                  ? widget.data['image']
+                                  : provider.imageAddress.toString(),
+                              email: provider.email['email']);
+
+                      var res = await EmpApi().select(
+                          email: provider.email['email'], provider: provider);
+
+                      Navigator.of(context).pop();
+                    },
               child: Text(
                 'บันทึก',
                 style: TextStyle(color: Colors.red),
@@ -266,6 +348,7 @@ class _addUserState extends State<addUser> {
                             if (newimage != null) {
                               final file = newimage;
                               setState(() {
+                                imageToUp = file.files.first;
                                 imageUser =
                                     File(file.files.first.path.toString());
                               });
@@ -278,21 +361,34 @@ class _addUserState extends State<addUser> {
                           color: Colors.grey.shade200,
                           width: 150,
                           height: 150,
-                          child: imageUser != null
-                              ? Image.file(
-                                  File(imageUser!.path),
-                                  fit: BoxFit.cover,
-                                )
-                              : data != null
-                                  ? Image.network(
-                                      data![0]['image'],
+                          child: widget.data == null
+                              ? imageUser != null
+                                  ? Image.file(
+                                      File(imageUser!.path),
                                       fit: BoxFit.cover,
                                     )
                                   : Icon(
                                       CupertinoIcons.photo_on_rectangle,
                                       size: 30,
                                       color: Colors.grey,
-                                    ),
+                                    )
+                              : widget.data['image'] != "0" && imageUser == null
+                                  ? Image.network(widget.data['image'])
+                                  : imageUser != null
+                                      ? Image.file(
+                                          File(imageUser!.path),
+                                          fit: BoxFit.cover,
+                                        )
+                                      : data != null
+                                          ? Image.network(
+                                              data![0]['image'],
+                                              fit: BoxFit.cover,
+                                            )
+                                          : Icon(
+                                              CupertinoIcons.photo_on_rectangle,
+                                              size: 30,
+                                              color: Colors.grey,
+                                            ),
                         ),
                       )
                     ],
@@ -310,6 +406,7 @@ class _addUserState extends State<addUser> {
                           width: 200,
                           height: 40,
                           child: TextField(
+                            controller: e_name,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -338,6 +435,9 @@ class _addUserState extends State<addUser> {
                           width: 200,
                           height: 40,
                           child: TextField(
+                            keyboardType: TextInputType.number,
+                            controller: e_pass,
+                            obscureText: true,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -374,283 +474,35 @@ class _addUserState extends State<addUser> {
               child: Column(
                 children: [
                   //
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('จัดการสินค้า'),
-                        //Switch Start
-                        FlutterSwitch(
-                          height: 20.0,
-                          width: 40.0,
-                          padding: 4.0,
-                          toggleSize: 15.0,
-                          borderRadius: 10.0,
-                          activeColor: Colors.red,
-                          value: prem1,
-                          onToggle: (value) {
-                            setState(() {
-                              prem1 = value;
-                            });
-                          },
-                        ),
-                        //Switch Stop
-                      ],
+                  for (int i = 0; i < setting1.length; i++)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 25, vertical: 5),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(setting1[i]),
+                          //Switch Start
+                          FlutterSwitch(
+                            height: 20.0,
+                            width: 40.0,
+                            padding: 4.0,
+                            toggleSize: 15.0,
+                            borderRadius: 10.0,
+                            activeColor: Colors.red,
+                            value: valSetting1[i],
+                            onToggle: (value) {
+                              setState(() {
+                                valSetting1[i] = value;
+                              });
+                            },
+                          ),
+                          //Switch Stop
+                        ],
+                      ),
                     ),
-                  ),
                   //
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('จัดการบิล'),
-                        //Switch Start
-                        FlutterSwitch(
-                          height: 20.0,
-                          width: 40.0,
-                          padding: 4.0,
-                          toggleSize: 15.0,
-                          borderRadius: 10.0,
-                          activeColor: Colors.red,
-                          value: prem2,
-                          onToggle: (value) {
-                            setState(() {
-                              prem2 = value;
-                            });
-                          },
-                        ),
-                        //Switch Stop
-                      ],
-                    ),
-                  ),
-                  //
-                  //
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('ยกเลิกการขาย'),
-                        //Switch Start
-                        FlutterSwitch(
-                          height: 20.0,
-                          width: 40.0,
-                          padding: 4.0,
-                          toggleSize: 15.0,
-                          borderRadius: 10.0,
-                          activeColor: Colors.red,
-                          value: prem3,
-                          onToggle: (value) {
-                            setState(() {
-                              prem3 = value;
-                            });
-                          },
-                        ),
-                        //Switch Stop
-                      ],
-                    ),
-                  ),
-                  //
-                  //
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('จัดการคลังสินค้า'),
-                        //Switch Start
-                        FlutterSwitch(
-                          height: 20.0,
-                          width: 40.0,
-                          padding: 4.0,
-                          toggleSize: 15.0,
-                          borderRadius: 10.0,
-                          activeColor: Colors.red,
-                          value: prem4,
-                          onToggle: (value) {
-                            setState(() {
-                              prem4 = value;
-                            });
-                          },
-                        ),
-                        //Switch Stop
-                      ],
-                    ),
-                  ),
-                  //
-                  //
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('เรียกดูรายงาน'),
-                        //Switch Start
-                        FlutterSwitch(
-                          height: 20.0,
-                          width: 40.0,
-                          padding: 4.0,
-                          toggleSize: 15.0,
-                          borderRadius: 10.0,
-                          activeColor: Colors.red,
-                          value: prem5,
-                          onToggle: (value) {
-                            setState(() {
-                              prem5 = value;
-                            });
-                          },
-                        ),
-                        //Switch Stop
-                      ],
-                    ),
-                  ),
-                  //
-                  //
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('ลูกค้า'),
-                        //Switch Start
-                        FlutterSwitch(
-                          height: 20.0,
-                          width: 40.0,
-                          padding: 4.0,
-                          toggleSize: 15.0,
-                          borderRadius: 10.0,
-                          activeColor: Colors.red,
-                          value: prem6,
-                          onToggle: (value) {
-                            setState(() {
-                              prem6 = value;
-                            });
-                          },
-                        ),
-                        //Switch Stop
-                      ],
-                    ),
-                  ),
-                  //
-                  //
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('การตั้งค่า'),
-                        //Switch Start
-                        FlutterSwitch(
-                          height: 20.0,
-                          width: 40.0,
-                          padding: 4.0,
-                          toggleSize: 15.0,
-                          borderRadius: 10.0,
-                          activeColor: Colors.red,
-                          value: prem7,
-                          onToggle: (value) {
-                            setState(() {
-                              prem8 = value;
-                            });
-                          },
-                        ),
-                        //Switch Stop
-                      ],
-                    ),
-                  ),
-                  //
-                  //
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('เปิดลิ้นชักเก็บเงิน'),
-                        //Switch Start
-                        FlutterSwitch(
-                          height: 20.0,
-                          width: 40.0,
-                          padding: 4.0,
-                          toggleSize: 15.0,
-                          borderRadius: 10.0,
-                          activeColor: Colors.red,
-                          value: prem9,
-                          onToggle: (value) {
-                            setState(() {
-                              prem9 = value;
-                            });
-                          },
-                        ),
-                        //Switch Stop
-                      ],
-                    ),
-                  ),
-                  //
-                  //
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('พนักงาน'),
-                        //Switch Start
-                        FlutterSwitch(
-                          height: 20.0,
-                          width: 40.0,
-                          padding: 4.0,
-                          toggleSize: 15.0,
-                          borderRadius: 10.0,
-                          activeColor: Colors.red,
-                          value: prem10,
-                          onToggle: (value) {
-                            setState(() {
-                              prem10 = value;
-                            });
-                          },
-                        ),
-                        //Switch Stop
-                      ],
-                    ),
-                  ),
-                  //
-                  //
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('แสดงกำไรที่ได้'),
-                        //Switch Start
-                        FlutterSwitch(
-                          height: 20.0,
-                          width: 40.0,
-                          padding: 4.0,
-                          toggleSize: 15.0,
-                          borderRadius: 10.0,
-                          activeColor: Colors.red,
-                          value: prem12,
-                          onToggle: (value) {
-                            setState(() {
-                              prem12 = value;
-                            });
-                          },
-                        ),
-                        //Switch Stop
-                      ],
-                    ),
-                  ),
+
                   //
                 ],
               ),
@@ -672,140 +524,34 @@ class _addUserState extends State<addUser> {
               child: Column(
                 children: [
                   //
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('สร้างเอกสารรับเข้า'),
-                        //Switch Start
-                        FlutterSwitch(
-                          height: 20.0,
-                          width: 40.0,
-                          padding: 4.0,
-                          toggleSize: 15.0,
-                          borderRadius: 10.0,
-                          activeColor: Colors.red,
-                          value: prem13,
-                          onToggle: (value) {
-                            setState(() {
-                              prem13 = value;
-                            });
-                          },
-                        ),
-                        //Switch Stop
-                      ],
+                  for (int i = 0; i < setting2.length; i++)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 25, vertical: 5),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(setting2[i]),
+                          //Switch Start
+                          FlutterSwitch(
+                            height: 20.0,
+                            width: 40.0,
+                            padding: 4.0,
+                            toggleSize: 15.0,
+                            borderRadius: 10.0,
+                            activeColor: Colors.red,
+                            value: valSetting2[i],
+                            onToggle: (value) {
+                              setState(() {
+                                valSetting2[i] = value;
+                              });
+                            },
+                          ),
+                          //Switch Stop
+                        ],
+                      ),
                     ),
-                  ),
                   //
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('แก้ไขเอกสารรับเข้า'),
-                        //Switch Start
-                        FlutterSwitch(
-                          height: 20.0,
-                          width: 40.0,
-                          padding: 4.0,
-                          toggleSize: 15.0,
-                          borderRadius: 10.0,
-                          activeColor: Colors.red,
-                          value: prem14,
-                          onToggle: (value) {
-                            setState(() {
-                              prem14 = value;
-                            });
-                          },
-                        ),
-                        //Switch Stop
-                      ],
-                    ),
-                  ),
-                  //
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('สร้างเอกสารจ่ายออก'),
-                        //Switch Start
-                        FlutterSwitch(
-                          height: 20.0,
-                          width: 40.0,
-                          padding: 4.0,
-                          toggleSize: 15.0,
-                          borderRadius: 10.0,
-                          activeColor: Colors.red,
-                          value: prem15,
-                          onToggle: (value) {
-                            setState(() {
-                              prem15 = value;
-                            });
-                          },
-                        ),
-                        //Switch Stop
-                      ],
-                    ),
-                  ),
-                  //
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('แก้ไขเอกสารจ่ายออก'),
-                        //Switch Start
-                        FlutterSwitch(
-                          height: 20.0,
-                          width: 40.0,
-                          padding: 4.0,
-                          toggleSize: 15.0,
-                          borderRadius: 10.0,
-                          activeColor: Colors.red,
-                          value: prem16,
-                          onToggle: (value) {
-                            setState(() {
-                              prem16 = value;
-                            });
-                          },
-                        ),
-                        //Switch Stop
-                      ],
-                    ),
-                  ),
-                  //
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('ปรับปรุงสต๊อก'),
-                        //Switch Start
-                        FlutterSwitch(
-                          height: 20.0,
-                          width: 40.0,
-                          padding: 4.0,
-                          toggleSize: 15.0,
-                          borderRadius: 10.0,
-                          activeColor: Colors.red,
-                          value: prem17,
-                          onToggle: (value) {
-                            setState(() {
-                              prem17 = value;
-                            });
-                          },
-                        ),
-                        //Switch Stop
-                      ],
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -813,6 +559,43 @@ class _addUserState extends State<addUser> {
         ),
       ),
     );
+  }
+
+  getData(Store provider) async {
+    if (!check) await UserStore.getStore(provider: provider);
+    setState(() {
+      data![0] = provider.userData![0];
+      print("userData ${provider.userData}");
+      print("emial: ${provider.email}");
+    });
+    try {
+      int i = 0;
+      setState(() {
+        print('เริ่ม...');
+        List adress = data![0]['adress1_2'].toString().split(",");
+
+        // name.value = TextEditingValue(text: "ANY TEXT");
+        check = false;
+        print('อัปเดทข้อมูลแล้ว➕');
+      });
+    } catch (e) {
+      print("ไม่สามารถดึงข้อมูลจากUserStoreได้เพราะ: $e");
+    }
+  }
+
+  getVal() {
+    Vsetting1 = valSetting1
+        .map(
+          (e) => e == false ? 0 : 1,
+        )
+        .join()
+        .toString();
+    Vsetting2 = valSetting2
+        .map(
+          (e) => e == false ? 0 : 1,
+        )
+        .join()
+        .toString();
   }
 }
 

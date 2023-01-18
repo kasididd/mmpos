@@ -208,6 +208,12 @@ class Store with ChangeNotifier {
     notifyListeners();
   }
 
+  String? imageAddress;
+  getImageAddress(get) {
+    imageAddress = get;
+    notifyListeners();
+  }
+
   List? order;
   getOrder(get) {
     order = get;

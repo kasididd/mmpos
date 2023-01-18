@@ -1,7 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
+import 'dart:math';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mmpos/API/service_api.dart';
 import 'package:mmpos/provider/store.dart';
 import 'package:http/http.dart' as http;
@@ -1303,5 +1307,33 @@ class Order {
   selectTable(Store provider) async {
     table = await TableAPI.select(provider.email['email']);
     table = table;
+  }
+}
+
+class ImageUpload {
+  Future<void> uploadImage(
+      {required String name,
+      required PlatformFile image,
+      required Store provider}) async {
+    try {
+      print(image.path);
+      String imageName = "";
+      List<int> imageBytes = File(image!.path.toString()).readAsBytesSync();
+      String baseimage = base64Encode(imageBytes);
+      // print('$imageName');
+      imageName = "(emp)$name${Random().nextInt(10)}.${image.extension}";
+      var response = await http.post(
+          Uri.parse('http://$config/mmposAPI/crud_mmpos.php'),
+          body: {'image': baseimage, 'name': imageName});
+      if (response.statusCode == 200) {
+        String address = "http://$config/mmposAPI/image/$imageName";
+        print(address);
+        provider.getImageAddress(address);
+      } else {
+        print("Error during connection to server");
+      }
+    } catch (e) {
+      print("$e");
+    }
   }
 }
