@@ -141,6 +141,7 @@ class _ProductScreenState extends State<ProductScreen> {
                               cost: cost.text,
                               quantity: quantity.text)
                           : await DataBase.update(
+                              email: provider.email['email'],
                               u_id: widget.getIn['u_id'],
                               name: name.text,
                               image: nameAd,

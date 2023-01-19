@@ -684,7 +684,9 @@ class _OldState extends State<Old> {
                     ),
                     OutlinedButton(
                         onPressed: () async {
-                          await TableAPI.insertU(name: tableName.text);
+                          await TableAPI.insertU(
+                              name: tableName.text,
+                              email: provider.email['email']);
                           await selectTable(provider);
                           Navigator.pop(context);
                         },

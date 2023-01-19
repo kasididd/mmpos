@@ -321,7 +321,9 @@ class _PhoneTableState extends State<PhoneTable> {
                     ),
                     OutlinedButton(
                         onPressed: () async {
-                          await TableAPI.insertU(name: tableName.text);
+                          await TableAPI.insertU(
+                              name: tableName.text,
+                              email: provider.email['email']);
                           await selectTable(provider);
                           Navigator.pop(context);
                         },
@@ -1347,6 +1349,7 @@ class _PhoneTableState extends State<PhoneTable> {
     TextEditingController fname = TextEditingController();
     TextEditingController lname = TextEditingController();
     TextEditingController tel = TextEditingController();
+    Store provider = context.watch<Store>();
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -1367,7 +1370,9 @@ class _PhoneTableState extends State<PhoneTable> {
                                 fname.text.isNotEmpty &&
                                 tel.text.isNotEmpty &&
                                 lname.text.isNotEmpty
-                            ? CustomerAPI.insertU(
+                            ? CustomerAPI().insertU(
+                                bday: "",
+                                email: provider.email['email'],
                                 fname: fname.text,
                                 lname: lname.text,
                                 tel: tel.text,

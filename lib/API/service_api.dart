@@ -1,14 +1,8 @@
 // ignore_for_file: non_constant_identifier_names
-
 import 'dart:convert';
 import 'dart:math';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:mmpos/src/print/printer_add.dart';
-import 'package:pdf/widgets.dart';
-
 import '../provider/store.dart';
 
 // String config = "103.141.68.48";
@@ -160,12 +154,9 @@ class DataBase {
     }
   }
 
-  static delete_id({required u_id}) async {
-    var response = await http.post(Uri.parse(dblink), body: {
-      "action": "USER_DELETE",
-      "u_id": u_id,
-      "email": FirebaseAuth.instance.currentUser!.email
-    });
+  static delete_id({required u_id, required String email}) async {
+    var response = await http.post(Uri.parse(dblink),
+        body: {"action": "USER_DELETE", "u_id": u_id, "email": email});
     if (response.statusCode == 200) {
       // print(response.body);
 
@@ -173,21 +164,21 @@ class DataBase {
     }
   }
 
-  static Future update({
-    required String u_id,
-    required String name,
-    required String image,
-    required String price,
-    required String items_barcode,
-    required String category,
-    required String type,
-    required String weight,
-    required String check_list,
-    required String is_use,
-    required String is_show,
-    required String cost,
-    required String quantity,
-  }) async {
+  static Future update(
+      {required String u_id,
+      required String name,
+      required String image,
+      required String price,
+      required String items_barcode,
+      required String category,
+      required String type,
+      required String weight,
+      required String check_list,
+      required String is_use,
+      required String is_show,
+      required String cost,
+      required String quantity,
+      required String email}) async {
     // String list = check_list.map((e) => e['checkIn']).toList().join();
     var response = await http.post(Uri.parse(dblink), body: {
       "action": "UPDATE",
@@ -204,7 +195,7 @@ class DataBase {
       "is_show": is_show,
       "cost": cost,
       "quantity": quantity,
-      "email": FirebaseAuth.instance.currentUser!.email
+      "email": email
     });
     if (response.statusCode == 200) {
       print(response.body);
@@ -289,7 +280,6 @@ class Cate {
       });
       if (response.statusCode == 200) {
         print(response.body);
-        print("insertt");
 
         return response.body;
       }
@@ -298,14 +288,9 @@ class Cate {
     }
   }
 
-  static select({
-    required String that_is,
-  }) async {
-    var response = await http.post(Uri.parse(cateLink), body: {
-      "action": "GET_ALL",
-      "email": FirebaseAuth.instance.currentUser!.email,
-      "that_is": that_is
-    });
+  static select({required String that_is, required String email}) async {
+    var response = await http.post(Uri.parse(cateLink),
+        body: {"action": "GET_ALL", "email": email, "that_is": that_is});
     if (response.statusCode == 200) {
       // print(response.body);
 
@@ -315,12 +300,10 @@ class Cate {
 
   static deleteAll({
     required String that_is,
+    required String email,
   }) async {
-    var response = await http.post(Uri.parse(cateLink), body: {
-      "action": "DELETE_All",
-      "email": FirebaseAuth.instance.currentUser!.email,
-      "that_is": that_is
-    });
+    var response = await http.post(Uri.parse(cateLink),
+        body: {"action": "DELETE_All", "email": email, "that_is": that_is});
     if (response.statusCode == 200) {
       // print(response.body);
 
@@ -344,25 +327,91 @@ class Cate {
   }
 }
 
+class CateCustomer {
+  Future insertU({required String name, required Store provider}) async {
+    try {
+      var response = await http.post(Uri.parse(cateLink), body: {
+        "action": "INSERT",
+        "name": name,
+        "color": "",
+        "that_is": "gr.customer",
+        "email": provider.email['email']
+      });
+      if (response.statusCode == 200) {
+        print(response.body);
+        return;
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  select({required Store provider}) async {
+    var response = await http.post(Uri.parse(cateLink), body: {
+      "action": "GET_ALL",
+      "email": provider.email['email'],
+      "that_is": "gr.customer"
+    });
+    if (response.statusCode == 200) {
+      // print(response.body);
+      List res = await jsonDecode(response.body);
+      provider.getCateGr(res);
+      return jsonDecode(response.body);
+    }
+  }
+
+  deleteAll({
+    required String email,
+  }) async {
+    var response = await http.post(Uri.parse(cateLink), body: {
+      "action": "DELETE_All",
+      "email": email,
+      "that_is": "gr.customer"
+    });
+    if (response.statusCode == 200) {
+      // print(response.body);
+
+      return response.body;
+    }
+  }
+
+  delete({required u_id, required Store provider}) async {
+    var response = await http.post(Uri.parse(cateLink), body: {
+      "action": "DELETE",
+      "u_id": u_id,
+      "email": provider.email['email'],
+      "that_is": "gr.customer"
+    });
+    if (response.statusCode == 200) {
+      // print(response.body);
+
+      return response.body;
+    }
+  }
+}
+
 class CustomerAPI {
-  static String customerLink = "http://$config/mmposAPI/customer.php";
-  static Future insertU({
+  String customerLink = "http://$config/mmposAPI/customer.php";
+  Future insertU({
     required String fname,
     required String lname,
     required String tel,
     required String sex,
     required String c_group,
+    required String email,
+    required String bday,
   }) async {
     try {
       print("sending");
       var response = await http.post(Uri.parse(customerLink), body: {
         "action": "INSERT",
-        "email": FirebaseAuth.instance.currentUser!.email,
+        "email": email,
         "fname": fname,
         "lname": lname,
         "tel": tel,
         "sex": sex,
         "c_group": c_group,
+        "bday": bday,
       });
       if (response.statusCode == 200) {
         print("sendsucess");
@@ -375,18 +424,17 @@ class CustomerAPI {
     }
   }
 
-  static select() async {
-    var response = await http.post(Uri.parse(customerLink), body: {
-      "action": "GET_ALL",
-    });
+  select({required Store provider}) async {
+    var response = await http.post(Uri.parse(customerLink),
+        body: {"action": "GET_ALL", "email": provider.email['email']});
     if (response.statusCode == 200) {
-      // print(response.body);
-
-      return jsonDecode(response.body);
+      List res = await jsonDecode(response.body);
+      provider.getCustomer(res);
+      return;
     }
   }
 
-  static deleteAll() async {
+  deleteAll() async {
     var response = await http.post(Uri.parse(customerLink), body: {
       "action": "DELETE_All",
     });
@@ -397,13 +445,11 @@ class CustomerAPI {
     }
   }
 
-  static delete({required u_id}) async {
+  delete({required u_id, required String email}) async {
     var response = await http.post(Uri.parse(customerLink),
-        body: {"action": "DELETE", "u_id": u_id});
+        body: {"action": "USER_DELETE", "u_id": u_id, "email": email});
     if (response.statusCode == 200) {
-      // print(response.body);
-
-      return response.body;
+      return;
     }
   }
 }
@@ -510,12 +556,13 @@ class TableAPI {
   static String tableLink = "http://$config/mmposAPI/table_list.php";
   static Future insertU({
     required String name,
+    required String email,
   }) async {
     try {
       print("sending");
       var response = await http.post(Uri.parse(tableLink), body: {
         "action": "INSERT",
-        "email": FirebaseAuth.instance.currentUser!.email,
+        "email": email,
         "name": name,
       });
       if (response.statusCode == 200) {
@@ -735,14 +782,13 @@ class UserStore {
 }
 
 class GetRefress {
-  static selectAll(Store provider) async {
-    print('หห');
-
-    var request = await http
-        .post(Uri.parse('http://$config/mmposAPI/items_crud.php'), body: {
-      "action": "GET_ALL",
-      "email": FirebaseAuth.instance.currentUser!.email
-    });
+  static selectAll({
+    required Store provider,
+    required String email,
+  }) async {
+    var request = await http.post(
+        Uri.parse('http://$config/mmposAPI/items_crud.php'),
+        body: {"action": "GET_ALL", "email": email});
 
     if (request.statusCode == 200) {
       // print(response.body);
@@ -751,11 +797,8 @@ class GetRefress {
       provider.getItem(res);
     }
 
-    var response = await http.post(Uri.parse(cateLink), body: {
-      "action": "GET_ALL",
-      "email": FirebaseAuth.instance.currentUser!.email,
-      "that_is": "cate"
-    });
+    var response = await http.post(Uri.parse(cateLink),
+        body: {"action": "GET_ALL", "email": email, "that_is": "cate"});
     if (response.statusCode == 200) {
       // print(response.body);
       var res = jsonDecode(response.body);

@@ -284,7 +284,8 @@ class _addUserState extends State<addUser> {
                   ? () => showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
-                          title: Text('ใส่ข้อมูล ชื่อ และ รหัส'),
+                          title: Text(
+                              'ใส่ข้อมูล ชื่อ:${e_name.text} และ รหัส:${e_pass.text}'),
                         ),
                       )
                   : () async {

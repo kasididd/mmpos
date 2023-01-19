@@ -1033,6 +1033,90 @@ class Order {
     }
   }
 
+  Future<dynamic> tableSelect(BuildContext context) {
+    TextEditingController tableName = TextEditingController();
+    Store provider = context.watch<Store>();
+    return showDialog(
+        context: context,
+        builder: (context) => StatefulBuilder(
+              builder: (context, setState) => AlertDialog(
+                title: SingleChildScrollView(
+                    child: Column(
+                  children: [
+                    TextField(
+                      controller: tableName,
+                    ),
+                    OutlinedButton(
+                        onPressed: () async {
+                          await TableAPI.insertU(
+                              name: tableName.text,
+                              email: provider.email['email']);
+                          await selectTable(provider);
+                          Navigator.pop(context);
+                        },
+                        child: const Text('เพิ่มโต๊ะ'))
+                  ],
+                )),
+              ),
+            ));
+  }
+
+  selectTable(Store provider) async {
+    table = await TableAPI.select(provider.email['email']);
+    table = table;
+  }
+}
+
+// _imageUpload
+class ImageUpload {
+  Future<void> uploadImage(
+      {required String name,
+      required PlatformFile image,
+      required Store provider}) async {
+    try {
+      print(image.path);
+      String imageName = "";
+      List<int> imageBytes = File(image!.path.toString()).readAsBytesSync();
+      String baseimage = base64Encode(imageBytes);
+      // print('$imageName');
+      imageName = "(emp)$name${Random().nextInt(10)}.${image.extension}";
+      var response = await http.post(
+          Uri.parse('http://$config/mmposAPI/crud_mmpos.php'),
+          body: {'image': baseimage, 'name': imageName});
+      if (response.statusCode == 200) {
+        String address = "http://$config/mmposAPI/image/$imageName";
+        print(address);
+        provider.getImageAddress(address);
+      } else {
+        print("Error during connection to server");
+      }
+    } catch (e) {
+      print("$e");
+    }
+  }
+}
+
+// customer
+class CustomerClass {
+  TextEditingController search = TextEditingController();
+  List getItem = [
+    {
+      "u_id": "46",
+      "name": "test",
+      "image": "244,67,54",
+      "price": "232",
+      "items_barcode": "232",
+      "category": "history",
+      "type": "สินค้ามี Serial",
+      "weight": "32323",
+      "check_list": "00000",
+      "is_use": "1",
+      "is_show": "1",
+      "cost": "23",
+      "quantity": "23",
+      "email": "test@gmail.com"
+    }
+  ];
   person(context) {
     showDialog(
       context: context,
@@ -1152,11 +1236,18 @@ class Order {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Icon(Icons.close),
-                      const Text('เพิ่มข้อมูลลูกค้า'),
-                      const Icon(
-                        Icons.close,
-                        color: Colors.white,
+                      GestureDetector(
+                          onTap: () => Navigator.pop(context),
+                          child: Icon(Icons.close)),
+                      Text('เพิ่มข้อมูลลูกค้า'),
+                      InkWell(
+                        onTap: () async {
+                          Navigator.pop(context);
+                        },
+                        child: Icon(
+                          Icons.close,
+                          color: Colors.green,
+                        ),
                       ),
                     ],
                   ),
@@ -1166,6 +1257,9 @@ class Order {
                   decoration: InputDecoration(hintText: "กรอกชื่อ"),
                 ),
                 const Text('นามสกุลลูกค้า'),
+                const TextField(
+                  decoration: InputDecoration(hintText: "กรอกนามสกุล"),
+                ),
                 const Text('เพศ'),
                 Row(
                   children: [
@@ -1188,9 +1282,6 @@ class Order {
                         ],
                       ),
                   ],
-                ),
-                const TextField(
-                  decoration: InputDecoration(hintText: "กรอกนามสกุล"),
                 ),
                 const Text("เบอร์โทร"),
                 const TextField(
@@ -1271,69 +1362,4 @@ class Order {
           ),
         ),
       );
-  duration() async* {
-    while (onStream) {
-      await Future.delayed(const Duration(seconds: 1));
-      yield '';
-    }
-  }
-
-  Future<dynamic> tableSelect(BuildContext context) {
-    TextEditingController tableName = TextEditingController();
-    Store provider = context.watch<Store>();
-    return showDialog(
-        context: context,
-        builder: (context) => StatefulBuilder(
-              builder: (context, setState) => AlertDialog(
-                title: SingleChildScrollView(
-                    child: Column(
-                  children: [
-                    TextField(
-                      controller: tableName,
-                    ),
-                    OutlinedButton(
-                        onPressed: () async {
-                          await TableAPI.insertU(name: tableName.text);
-                          await selectTable(provider);
-                          Navigator.pop(context);
-                        },
-                        child: const Text('เพิ่มโต๊ะ'))
-                  ],
-                )),
-              ),
-            ));
-  }
-
-  selectTable(Store provider) async {
-    table = await TableAPI.select(provider.email['email']);
-    table = table;
-  }
-}
-
-class ImageUpload {
-  Future<void> uploadImage(
-      {required String name,
-      required PlatformFile image,
-      required Store provider}) async {
-    try {
-      print(image.path);
-      String imageName = "";
-      List<int> imageBytes = File(image!.path.toString()).readAsBytesSync();
-      String baseimage = base64Encode(imageBytes);
-      // print('$imageName');
-      imageName = "(emp)$name${Random().nextInt(10)}.${image.extension}";
-      var response = await http.post(
-          Uri.parse('http://$config/mmposAPI/crud_mmpos.php'),
-          body: {'image': baseimage, 'name': imageName});
-      if (response.statusCode == 200) {
-        String address = "http://$config/mmposAPI/image/$imageName";
-        print(address);
-        provider.getImageAddress(address);
-      } else {
-        print("Error during connection to server");
-      }
-    } catch (e) {
-      print("$e");
-    }
-  }
 }

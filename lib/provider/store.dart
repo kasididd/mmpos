@@ -226,6 +226,12 @@ class Store with ChangeNotifier {
     notifyListeners();
   }
 
+  List customer = [];
+  getCustomer(get) {
+    customer = get;
+    notifyListeners();
+  }
+
   List? item;
   getItem(get) {
     item = get;
@@ -240,6 +246,12 @@ class Store with ChangeNotifier {
 
   getCate(List get) {
     cate = get;
+    notifyListeners();
+  }
+
+  List? cateGr;
+  getCateGr(List get) {
+    cateGr = get;
     notifyListeners();
   }
 
