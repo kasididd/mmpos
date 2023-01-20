@@ -24,6 +24,20 @@ class _CustomerState extends State<Customer> {
     check = false;
   }
 
+  editCustomer({required dynamic update}) async {
+    final data = await showCupertinoModalBottomSheet(
+      expand: true,
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => AddCustomer(update: update),
+    );
+    setState(() {
+      if (data != null) {
+        if (data) check = data;
+      }
+    });
+  }
+
   bool check = true;
   @override
   Widget build(BuildContext context) {
@@ -69,7 +83,11 @@ class _CustomerState extends State<Customer> {
                   builder: (context) => AddCustomer(),
                 );
                 setState(() {
-                  if (data) check = data;
+                  if (data != null) {
+                    if (data) check = data;
+                  } else {
+                    print('object');
+                  }
                 });
               },
               child: Text(
@@ -100,6 +118,13 @@ class _CustomerState extends State<Customer> {
                                   motion: const ScrollMotion(),
                                   children: [
                                     SlidableAction(
+                                      onPressed: (context) async =>
+                                          editCustomer(
+                                              update: provider.customer[i]),
+                                      icon: Icons.edit,
+                                      backgroundColor: Colors.amber,
+                                    ),
+                                    SlidableAction(
                                       onPressed: (context) async => {
                                         await CustomerAPI().delete(
                                             u_id: provider.customer[i]['u_id'],
@@ -110,7 +135,7 @@ class _CustomerState extends State<Customer> {
                                       },
                                       icon: Icons.delete,
                                       backgroundColor: Colors.red,
-                                    )
+                                    ),
                                   ]),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -169,8 +194,8 @@ class _CustomerState extends State<Customer> {
 }
 
 class AddCustomer extends StatefulWidget {
-  const AddCustomer({super.key});
-
+  const AddCustomer({super.key, this.update});
+  final dynamic update;
   @override
   State<AddCustomer> createState() => _AddCustomerState();
 }
@@ -187,14 +212,31 @@ class _AddCustomerState extends State<AddCustomer> {
     setState(() {
       test = provider.cateGr!.map((e) => e['name']).toList();
     });
-    print('get Cate');
   }
 
+  setUpdate() {
+    fname = TextEditingController(text: widget.update['fname']);
+    lname = TextEditingController(text: widget.update['lname']);
+    tel = TextEditingController(text: widget.update['tel']);
+    c_group = TextEditingController(text: widget.update['c_group']);
+    bday = TextEditingController(text: widget.update['bday']);
+    sex = widget.update['sex'] == "ชาย"
+        ? 1
+        : widget.update['หญิง']
+            ? 2
+            : 3;
+    setState(() {
+      check = false;
+    });
+  }
+
+  bool check = true;
   @override
   Widget build(BuildContext context) {
     Store provider = context.watch<Store>();
     String email = provider.email['email'];
     getCate(provider);
+    if (check) setUpdate();
     return Scaffold(
       //
       backgroundColor: Colors.grey.shade200,
@@ -527,36 +569,54 @@ class _AddCustomerState extends State<AddCustomer> {
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(primary: Colors.red),
                       onPressed: () async {
-                        if (c_group.text.isNotEmpty &&
-                            fname.text.isNotEmpty &&
-                            lname.text.isNotEmpty &&
-                            tel.text.isNotEmpty &&
-                            c_group.text.isNotEmpty &&
-                            bday.text.isNotEmpty) {
-                          await CustomerAPI().insertU(
-                              fname: fname.text.trim(),
-                              lname: lname.text.trim(),
-                              tel: tel.text.trim(),
+                        if (widget.update != null) {
+                          await CustomerAPI().updateCustomer(
+                              fname: fname.text,
+                              lname: lname.text,
+                              tel: tel.text,
                               sex: sex == 1
                                   ? "ชาย"
                                   : sex == 2
                                       ? "หญิง"
                                       : "ไม่ระบุ",
-                              c_group: c_group.text.trim(),
+                              c_group: c_group.text,
                               email: email,
-                              bday: bday.text.trim());
-                          // gr.where((element) => element['name'])
-                          final gr = provider.cateGr!;
-                          final list = gr
-                              .where(
-                                (element) => element['name'] == c_group.text,
-                              )
-                              .toList();
-                          if (list.isEmpty) {
-                            await CateCustomer().insertU(
-                                name: c_group.text.trim(), provider: provider);
-                          }
+                              bday: bday.text,
+                              u_id: widget.update['u_id']);
                           Navigator.pop(context, true);
+                        } else {
+                          if (c_group.text.isNotEmpty &&
+                              fname.text.isNotEmpty &&
+                              lname.text.isNotEmpty &&
+                              tel.text.isNotEmpty &&
+                              c_group.text.isNotEmpty &&
+                              bday.text.isNotEmpty) {
+                            await CustomerAPI().insertU(
+                                fname: fname.text.trim(),
+                                lname: lname.text.trim(),
+                                tel: tel.text.trim(),
+                                sex: sex == 1
+                                    ? "ชาย"
+                                    : sex == 2
+                                        ? "หญิง"
+                                        : "ไม่ระบุ",
+                                c_group: c_group.text.trim(),
+                                email: email,
+                                bday: bday.text.trim());
+                            // gr.where((element) => element['name'])
+                            final gr = provider.cateGr!;
+                            final list = gr
+                                .where(
+                                  (element) => element['name'] == c_group.text,
+                                )
+                                .toList();
+                            if (list.isEmpty) {
+                              await CateCustomer().insertU(
+                                  name: c_group.text.trim(),
+                                  provider: provider);
+                            }
+                            Navigator.pop(context, true);
+                          }
                         }
                       },
                       child: const Text('บันทึก'),

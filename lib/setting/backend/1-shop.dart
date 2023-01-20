@@ -3,8 +3,6 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mmpos/API/service_api.dart';
@@ -101,7 +99,7 @@ class _ShopSettingState extends State<ShopSetting> {
                       },
                       child: Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.arrow_back_ios_new,
                             color: Colors.red,
                             size: 20,
@@ -111,7 +109,7 @@ class _ShopSettingState extends State<ShopSetting> {
                 ],
               ),
               //
-              title: Text(
+              title: const Text(
                 'ตั้งค่าร้านค้า',
                 style: TextStyle(color: Colors.black54, fontSize: 17),
               ),
@@ -126,25 +124,25 @@ class _ShopSettingState extends State<ShopSetting> {
                       if (image != null ||
                           data[0]['image'].length > 10 &&
                               type_store != null &&
-                              tax_id.text.length > 0 &&
-                              pos_id.text.length > 0 &&
-                              branch.text.length > 0 &&
-                              m_id.text.length > 0 &&
-                              time_open.text.length > 0 &&
-                              time_close.text.length > 0 &&
-                              tax_val.text.length > 0 &&
-                              service_chage.text.length > 0 &&
-                              adress1.text.length > 0 &&
-                              adress2.text.length > 0 &&
-                              tel.text.length > 0 &&
-                              name.text.length > 0 &&
-                              tel.text.length > 0) {
+                              tax_id.text.isNotEmpty &&
+                              pos_id.text.isNotEmpty &&
+                              branch.text.isNotEmpty &&
+                              m_id.text.isNotEmpty &&
+                              time_open.text.isNotEmpty &&
+                              time_close.text.isNotEmpty &&
+                              tax_val.text.isNotEmpty &&
+                              service_chage.text.isNotEmpty &&
+                              adress1.text.isNotEmpty &&
+                              adress2.text.isNotEmpty &&
+                              tel.text.isNotEmpty &&
+                              name.text.isNotEmpty &&
+                              tel.text.isNotEmpty) {
                         String adress1_2 = "${adress1.text},${adress2.text}";
                         await UserStore.update(
                           email: provider.email['email'],
                           setting: type_store,
-                          u_id: data![0]['u_id'],
-                          image: image != null ? image : data![0]['image'],
+                          u_id: data[0]['u_id'],
+                          image: image != null ? image : data[0]['image'],
                           type_store: select.toString(),
                           tax_id: tax_id.text,
                           pos_id: pos_id.text,
@@ -163,7 +161,7 @@ class _ShopSettingState extends State<ShopSetting> {
                         await getData(provider);
                         await showDialog(
                           context: context,
-                          builder: (context) => AlertDialog(
+                          builder: (context) => const AlertDialog(
                               title: Text(
                             "สำเร็จ!",
                             style: TextStyle(fontSize: 24),
@@ -172,7 +170,7 @@ class _ShopSettingState extends State<ShopSetting> {
                       } else {
                         showDialog(
                           context: context,
-                          builder: (context) => AlertDialog(
+                          builder: (context) => const AlertDialog(
                               title: Text(
                             "กรุณาใส่ข้อมูลให้ครบ!",
                             style: TextStyle(fontSize: 24),
@@ -180,7 +178,7 @@ class _ShopSettingState extends State<ShopSetting> {
                         );
                       }
                     },
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.save,
                       size: 40,
                     ),
@@ -212,7 +210,7 @@ class _ShopSettingState extends State<ShopSetting> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('โลโก้'),
+                          const Text('โลโก้'),
                           InkWell(
                             onTap: () async {
                               {
@@ -239,10 +237,10 @@ class _ShopSettingState extends State<ShopSetting> {
                                     )
                                   : data != null
                                       ? Image.network(
-                                          data![0]['image'],
+                                          data[0]['image'],
                                           fit: BoxFit.cover,
                                         )
-                                      : Icon(
+                                      : const Icon(
                                           CupertinoIcons.photo_on_rectangle,
                                           size: 30,
                                           color: Colors.grey,
@@ -261,7 +259,7 @@ class _ShopSettingState extends State<ShopSetting> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('ชื่อร้าน'),
+                          const Text('ชื่อร้าน'),
                           Container(
                             width: 200,
                             height: 40,
@@ -270,11 +268,13 @@ class _ShopSettingState extends State<ShopSetting> {
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Colors.grey),
+                                  borderSide:
+                                      const BorderSide(color: Colors.grey),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Colors.grey),
+                                  borderSide:
+                                      const BorderSide(color: Colors.grey),
                                 ),
                                 hintText: '',
                               ),
@@ -291,7 +291,7 @@ class _ShopSettingState extends State<ShopSetting> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('ประเภทร้านค้า'),
+                          const Text('ประเภทร้านค้า'),
                           SizedBox(
                             child: Container(
                               decoration: BoxDecoration(
@@ -320,7 +320,7 @@ class _ShopSettingState extends State<ShopSetting> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('เลขประจำตัวผู้เสียภาษี'),
+                          const Text('เลขประจำตัวผู้เสียภาษี'),
                           Container(
                             width: 200,
                             height: 40,
@@ -329,11 +329,13 @@ class _ShopSettingState extends State<ShopSetting> {
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Colors.grey),
+                                  borderSide:
+                                      const BorderSide(color: Colors.grey),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Colors.grey),
+                                  borderSide:
+                                      const BorderSide(color: Colors.grey),
                                 ),
                                 hintText: '',
                               ),
@@ -350,7 +352,7 @@ class _ShopSettingState extends State<ShopSetting> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('POS ID'),
+                          const Text('POS ID'),
                           Container(
                             width: 200,
                             height: 40,
@@ -359,11 +361,13 @@ class _ShopSettingState extends State<ShopSetting> {
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Colors.grey),
+                                  borderSide:
+                                      const BorderSide(color: Colors.grey),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Colors.grey),
+                                  borderSide:
+                                      const BorderSide(color: Colors.grey),
                                 ),
                                 hintText: '',
                               ),
@@ -380,7 +384,7 @@ class _ShopSettingState extends State<ShopSetting> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('สาขา'),
+                          const Text('สาขา'),
                           Container(
                             width: 90,
                             height: 40,
@@ -389,17 +393,19 @@ class _ShopSettingState extends State<ShopSetting> {
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Colors.grey),
+                                  borderSide:
+                                      const BorderSide(color: Colors.grey),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Colors.grey),
+                                  borderSide:
+                                      const BorderSide(color: Colors.grey),
                                 ),
                                 hintText: '',
                               ),
                             ),
                           ),
-                          Text('เลขประจำเครื่อง'),
+                          const Text('เลขประจำเครื่อง'),
                           Container(
                             width: 90,
                             height: 40,
@@ -408,11 +414,13 @@ class _ShopSettingState extends State<ShopSetting> {
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Colors.grey),
+                                  borderSide:
+                                      const BorderSide(color: Colors.grey),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Colors.grey),
+                                  borderSide:
+                                      const BorderSide(color: Colors.grey),
                                 ),
                                 hintText: '',
                               ),
@@ -429,7 +437,7 @@ class _ShopSettingState extends State<ShopSetting> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('เวลาเปิดร้าน'),
+                          const Text('เวลาเปิดร้าน'),
                           Container(
                             width: 90,
                             height: 40,
@@ -438,17 +446,19 @@ class _ShopSettingState extends State<ShopSetting> {
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Colors.grey),
+                                  borderSide:
+                                      const BorderSide(color: Colors.grey),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Colors.grey),
+                                  borderSide:
+                                      const BorderSide(color: Colors.grey),
                                 ),
                                 hintText: '',
                               ),
                             ),
                           ),
-                          Text('เวลาปิดร้าน'),
+                          const Text('เวลาปิดร้าน'),
                           Container(
                             width: 90,
                             height: 40,
@@ -457,11 +467,13 @@ class _ShopSettingState extends State<ShopSetting> {
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Colors.grey),
+                                  borderSide:
+                                      const BorderSide(color: Colors.grey),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Colors.grey),
+                                  borderSide:
+                                      const BorderSide(color: Colors.grey),
                                 ),
                                 hintText: '',
                               ),
@@ -490,7 +502,7 @@ class _ShopSettingState extends State<ShopSetting> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('ภาษีมูลค่าเพิ่ม'),
+                        const Text('ภาษีมูลค่าเพิ่ม'),
                         Container(
                           width: 100,
                           height: 40,
@@ -499,11 +511,13 @@ class _ShopSettingState extends State<ShopSetting> {
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(color: Colors.grey),
+                                borderSide:
+                                    const BorderSide(color: Colors.grey),
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(color: Colors.grey),
+                                borderSide:
+                                    const BorderSide(color: Colors.grey),
                               ),
                               hintText: '',
                             ),
@@ -514,9 +528,8 @@ class _ShopSettingState extends State<ShopSetting> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 5),
+                              const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 5),
                                 child: Text('แยก'),
                               ),
                               //Switch Start
@@ -535,9 +548,8 @@ class _ShopSettingState extends State<ShopSetting> {
                                 },
                               ),
                               //Switch Stop
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 5),
+                              const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 5),
                                 child: Text('รวม'),
                               )
                             ],
@@ -554,10 +566,10 @@ class _ShopSettingState extends State<ShopSetting> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('ค่าบริการ'),
+                        const Text('ค่าบริการ'),
                         Row(
                           children: [
-                            Text('ใช้งานทุกบิล'),
+                            const Text('ใช้งานทุกบิล'),
                             //Switch Start
                             Padding(
                               padding:
@@ -588,11 +600,13 @@ class _ShopSettingState extends State<ShopSetting> {
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(color: Colors.grey),
+                                borderSide:
+                                    const BorderSide(color: Colors.grey),
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(color: Colors.grey),
+                                borderSide:
+                                    const BorderSide(color: Colors.grey),
                               ),
                               hintText: '',
                             ),
@@ -609,7 +623,7 @@ class _ShopSettingState extends State<ShopSetting> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('การปัดเศษ'),
+                        const Text('การปัดเศษ'),
                         TextButton(
                             onPressed: () {
                               //
@@ -617,7 +631,7 @@ class _ShopSettingState extends State<ShopSetting> {
                                 expand: true,
                                 context: context,
                                 backgroundColor: Colors.transparent,
-                                builder: (context) => RoundSetting(),
+                                builder: (context) => const RoundSetting(),
                               );
                               //
                               print('show');
@@ -655,7 +669,7 @@ class _ShopSettingState extends State<ShopSetting> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('ที่อยู่บรรทัดที่ 1'),
+                        const Text('ที่อยู่บรรทัดที่ 1'),
                         Container(
                           width: 200,
                           height: 40,
@@ -664,11 +678,13 @@ class _ShopSettingState extends State<ShopSetting> {
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(color: Colors.grey),
+                                borderSide:
+                                    const BorderSide(color: Colors.grey),
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(color: Colors.grey),
+                                borderSide:
+                                    const BorderSide(color: Colors.grey),
                               ),
                               hintText: '',
                             ),
@@ -685,7 +701,7 @@ class _ShopSettingState extends State<ShopSetting> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('ที่อยู่บรรทัดที่ 2'),
+                        const Text('ที่อยู่บรรทัดที่ 2'),
                         Container(
                           width: 200,
                           height: 40,
@@ -694,11 +710,13 @@ class _ShopSettingState extends State<ShopSetting> {
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(color: Colors.grey),
+                                borderSide:
+                                    const BorderSide(color: Colors.grey),
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(color: Colors.grey),
+                                borderSide:
+                                    const BorderSide(color: Colors.grey),
                               ),
                               hintText: '',
                             ),
@@ -715,7 +733,7 @@ class _ShopSettingState extends State<ShopSetting> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('เบอร์โทรศัพท์'),
+                        const Text('เบอร์โทรศัพท์'),
                         Container(
                           width: 200,
                           height: 40,
@@ -724,11 +742,13 @@ class _ShopSettingState extends State<ShopSetting> {
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(color: Colors.grey),
+                                borderSide:
+                                    const BorderSide(color: Colors.grey),
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(color: Colors.grey),
+                                borderSide:
+                                    const BorderSide(color: Colors.grey),
                               ),
                               hintText: '',
                             ),
@@ -767,7 +787,7 @@ class _ShopSettingState extends State<ShopSetting> {
           child: Center(
               child: Text(
             text1,
-            style: TextStyle(fontSize: 13),
+            style: const TextStyle(fontSize: 13),
           )),
         ),
       ),
@@ -784,20 +804,20 @@ class _ShopSettingState extends State<ShopSetting> {
     try {
       setState(() {
         print('เริ่ม...');
-        List adress = data![0]['adress1_2'].toString().split(",");
-        name = TextEditingController(text: data![0]['name_store']);
-        tax_id = TextEditingController(text: data![0]['tax_id']);
-        pos_id = TextEditingController(text: data![0]['pos_id']);
-        branch = TextEditingController(text: data![0]['branch']);
-        m_id = TextEditingController(text: data![0]['m_id']);
-        time_open = TextEditingController(text: data![0]['time_open']);
-        time_close = TextEditingController(text: data![0]['time_close']);
-        tax_val = TextEditingController(text: data![0]['tax_val']);
-        service_chage = TextEditingController(text: data![0]['service_chage']);
-        is_doble = int.parse(data![0]['is_doble']);
+        List adress = data[0]['adress1_2'].toString().split(",");
+        name = TextEditingController(text: data[0]['name_store']);
+        tax_id = TextEditingController(text: data[0]['tax_id']);
+        pos_id = TextEditingController(text: data[0]['pos_id']);
+        branch = TextEditingController(text: data[0]['branch']);
+        m_id = TextEditingController(text: data[0]['m_id']);
+        time_open = TextEditingController(text: data[0]['time_open']);
+        time_close = TextEditingController(text: data[0]['time_close']);
+        tax_val = TextEditingController(text: data[0]['tax_val']);
+        service_chage = TextEditingController(text: data[0]['service_chage']);
+        is_doble = int.parse(data[0]['is_doble']);
         adress1 = TextEditingController(text: adress[0]);
         adress2 = TextEditingController(text: adress[1]);
-        tel = TextEditingController(text: data![0]['tel_promt']);
+        tel = TextEditingController(text: data[0]['tel_promt']);
         // name.value = TextEditingValue(text: "ANY TEXT");
         check = false;
         print('อัปเดทข้อมูลแล้ว➕');

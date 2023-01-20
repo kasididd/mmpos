@@ -43,7 +43,7 @@ class _PhoneTableState extends State<PhoneTable> {
   int setSideBar = 0;
   int priceSum = 0;
   bool onOff = true;
-  var colorsPicked = const Color(0xfff44336);
+  Color colorsPicked = const Color(0xfff44336);
   List getItem = [
     {
       "u_id": "46",
@@ -251,6 +251,7 @@ class _PhoneTableState extends State<PhoneTable> {
               Expanded(
                 flex: 1,
                 child: Container(
+                  // main1
                   child: sideBarItem(size, provider),
                 ),
               ),
@@ -513,189 +514,7 @@ class _PhoneTableState extends State<PhoneTable> {
                 ),
               ),
             InkWell(
-              onTap: () async => await showDialog<void>(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    content: StatefulBuilder(
-                      builder: (BuildContext context, StateSetter setState) {
-                        return SingleChildScrollView(
-                          child: Column(
-                            children: List<Widget>.generate(1, (int index) {
-                              return SizedBox(
-                                width: size.width,
-                                height: size.height * .7,
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          IconButton(
-                                              onPressed: () =>
-                                                  Navigator.of(context).pop(),
-                                              icon: const Icon(Icons.close)),
-                                          const Text('เพิ่มกลุ่มสินค้า'),
-                                          TextButton(
-                                              onPressed: () async {
-                                                if (nameCate.text.isNotEmpty) {
-                                                  print(nameCate.text);
-                                                  sideBar.add({
-                                                    "color":
-                                                        "${colorsPicked.red},${colorsPicked.green},${colorsPicked.blue}",
-                                                    "name": nameCate.text
-                                                  });
-                                                  await Cate.insertU(
-                                                      provider: provider,
-                                                      name: nameCate.text,
-                                                      that_is: "cate",
-                                                      color:
-                                                          "${colorsPicked.red},${colorsPicked.green},${colorsPicked.blue}");
-                                                  nameCate.clear();
-
-                                                  await cateSelect(provider);
-                                                  Navigator.of(context).pop();
-                                                } else {
-                                                  showDialog(
-                                                    context: context,
-                                                    builder: (context) =>
-                                                        const AlertDialog(
-                                                            title: Text(
-                                                                "โปรดใส่ชื่อ!")),
-                                                  );
-                                                }
-                                              },
-                                              child: const Text('บันทึก'))
-                                        ],
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          SizedBox(
-                                            width: size.width * .5,
-                                            height: 40,
-                                            child: TextField(
-                                              controller: nameCate,
-                                              decoration: const InputDecoration(
-                                                  hintText: "ชื่อกลุ่มสินค้า",
-                                                  border: OutlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                        width: 3,
-                                                        color:
-                                                            Colors.blueAccent),
-                                                  )),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 40),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          const Text('เลือกสีพื้นหลัง'),
-                                          GestureDetector(
-                                            onTap: () => showDialog(
-                                                context: context,
-                                                builder: (
-                                                  BuildContext context,
-                                                ) {
-                                                  return AlertDialog(
-                                                    title:
-                                                        SingleChildScrollView(
-                                                      child: SizedBox(
-                                                        width: size.width * .3,
-                                                        height:
-                                                            size.height * .5,
-                                                        child:
-                                                            SingleChildScrollView(
-                                                          child: BlockPicker(
-                                                            pickerColor:
-                                                                Colors.red,
-                                                            onColorChanged:
-                                                                (color) {
-                                                              setState(() {
-                                                                colorsPicked =
-                                                                    color;
-                                                              });
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .pop();
-                                                            },
-                                                            layoutBuilder:
-                                                                (context,
-                                                                    colors,
-                                                                    child) {
-                                                              return GridView(
-                                                                physics:
-                                                                    const NeverScrollableScrollPhysics(),
-                                                                shrinkWrap:
-                                                                    true,
-                                                                gridDelegate:
-                                                                    const SliverGridDelegateWithMaxCrossAxisExtent(
-                                                                  maxCrossAxisExtent:
-                                                                      100,
-                                                                  childAspectRatio:
-                                                                      1.0,
-                                                                  crossAxisSpacing:
-                                                                      10,
-                                                                  mainAxisExtent:
-                                                                      100,
-                                                                  mainAxisSpacing:
-                                                                      10,
-                                                                ),
-                                                                children: [
-                                                                  for (Color color
-                                                                      in colors)
-                                                                    child(color)
-                                                                ],
-                                                              );
-                                                            },
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  );
-                                                }),
-                                            child: Container(
-                                                width: 50,
-                                                height: 30,
-                                                color: colorsPicked),
-                                          )
-                                        ],
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          const Text('เปิดใช้งาน'),
-                                          SizedBox(
-                                              width: 80,
-                                              height: 80,
-                                              child: Switch(
-                                                value: onOff,
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    onOff = !onOff;
-                                                  });
-                                                },
-                                              )),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            }),
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                },
-              ),
+              onTap: () async => await addCategory(size, provider),
               child: SizedBox(
                 width: double.infinity,
                 height: 100,
@@ -712,6 +531,170 @@ class _PhoneTableState extends State<PhoneTable> {
           ],
         ),
       ),
+    );
+  }
+
+  addCategory(Size size, Store provider) async {
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return SingleChildScrollView(
+                child: Column(
+                  children: List<Widget>.generate(1, (int index) {
+                    return SizedBox(
+                      width: size.width,
+                      height: size.height * .7,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                IconButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(),
+                                    icon: const Icon(Icons.close)),
+                                const Text('เพิ่มกลุ่มสินค้า'),
+                                TextButton(
+                                    onPressed: () async {
+                                      if (nameCate.text.isNotEmpty) {
+                                        print(nameCate.text);
+                                        sideBar.add({
+                                          "color":
+                                              "${colorsPicked.red},${colorsPicked.green},${colorsPicked.blue}",
+                                          "name": nameCate.text
+                                        });
+                                        await Cate.insertU(
+                                            provider: provider,
+                                            name: nameCate.text,
+                                            that_is: "cate",
+                                            color:
+                                                "${colorsPicked.red},${colorsPicked.green},${colorsPicked.blue}");
+                                        nameCate.clear();
+
+                                        await cateSelect(provider);
+                                        Navigator.of(context).pop();
+                                      } else {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) =>
+                                              const AlertDialog(
+                                                  title: Text("โปรดใส่ชื่อ!")),
+                                        );
+                                      }
+                                    },
+                                    child: const Text('บันทึก'))
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: size.width * .5,
+                                  height: 40,
+                                  child: TextField(
+                                    controller: nameCate,
+                                    decoration: const InputDecoration(
+                                        hintText: "ชื่อกลุ่มสินค้า",
+                                        border: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              width: 3,
+                                              color: Colors.blueAccent),
+                                        )),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 40),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('เลือกสีพื้นหลัง'),
+                                GestureDetector(
+                                  onTap: () => showDialog(
+                                      context: context,
+                                      builder: (
+                                        BuildContext context,
+                                      ) {
+                                        return AlertDialog(
+                                          title: SingleChildScrollView(
+                                            child: SizedBox(
+                                              width: size.width * .3,
+                                              height: size.height * .5,
+                                              child: SingleChildScrollView(
+                                                child: BlockPicker(
+                                                  pickerColor: Colors.red,
+                                                  onColorChanged: (color) {
+                                                    setState(() {
+                                                      colorsPicked = color;
+                                                    });
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  layoutBuilder:
+                                                      (context, colors, child) {
+                                                    return GridView(
+                                                      physics:
+                                                          const NeverScrollableScrollPhysics(),
+                                                      shrinkWrap: true,
+                                                      gridDelegate:
+                                                          const SliverGridDelegateWithMaxCrossAxisExtent(
+                                                        maxCrossAxisExtent: 100,
+                                                        childAspectRatio: 1.0,
+                                                        crossAxisSpacing: 10,
+                                                        mainAxisExtent: 100,
+                                                        mainAxisSpacing: 10,
+                                                      ),
+                                                      children: [
+                                                        for (Color color
+                                                            in colors)
+                                                          child(color)
+                                                      ],
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }),
+                                  child: Container(
+                                      width: 50,
+                                      height: 30,
+                                      color: colorsPicked),
+                                )
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('เปิดใช้งาน'),
+                                SizedBox(
+                                    width: 80,
+                                    height: 80,
+                                    child: Switch(
+                                      value: onOff,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          onOff = !onOff;
+                                        });
+                                      },
+                                    )),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:searchfield/searchfield.dart';
 import '../provider/store.dart';
 
 // String config = "103.141.68.48";
@@ -424,6 +425,39 @@ class CustomerAPI {
     }
   }
 
+  Future updateCustomer({
+    required String fname,
+    required String lname,
+    required String tel,
+    required String sex,
+    required String c_group,
+    required String email,
+    required String bday,
+    required String u_id,
+  }) async {
+    try {
+      print("sending");
+      var response = await http.post(Uri.parse(customerLink), body: {
+        "action": "UPDATE",
+        "email": email,
+        "fname": fname,
+        "lname": lname,
+        "tel": tel,
+        "sex": sex,
+        "c_group": c_group,
+        "bday": bday,
+        "u_id": u_id,
+      });
+      if (response.statusCode == 200) {
+        print(response.body);
+
+        return response.body;
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   select({required Store provider}) async {
     var response = await http.post(Uri.parse(customerLink),
         body: {"action": "GET_ALL", "email": provider.email['email']});
@@ -825,5 +859,36 @@ class Utility {
     Size size = MediaQuery.of(context).size;
     bool phone = size.width < size.height;
     return phone;
+  }
+
+  SearchField searcher(
+      {required String text,
+      required List suggest,
+      required TextEditingController search}) {
+    return SearchField(
+      controller: search,
+      searchInputDecoration: InputDecoration(
+        contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+        border: InputBorder.none,
+        icon: const Icon(Icons.search),
+        hintText: text,
+      ),
+      itemHeight: 50,
+      maxSuggestionsInViewPort: 7,
+      suggestionsDecoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(0),
+      ),
+      suggestions: suggest
+          .map(
+            (element) => SearchFieldListItem(element.toString(),
+                item: element,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Text(element.toString()),
+                )),
+          )
+          .toList(),
+    );
   }
 }

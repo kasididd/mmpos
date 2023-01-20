@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mmpos/API/service_api.dart';
 
@@ -185,7 +184,6 @@ class Store with ChangeNotifier {
     print(GetAPI.genQrProm(name: 'name'));
   }
 
-  Color? colorsPicked;
   bool? onOff;
 
   // mainOrder
@@ -252,6 +250,12 @@ class Store with ChangeNotifier {
   List? cateGr;
   getCateGr(List get) {
     cateGr = get;
+    notifyListeners();
+  }
+
+  Color colorPick = const Color(0xfff44336);
+  getColorPick(Color get) {
+    colorPick = get;
     notifyListeners();
   }
 

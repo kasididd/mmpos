@@ -1363,3 +1363,62 @@ class CustomerClass {
         ),
       );
 }
+
+class ColorPick {
+  pickColor(context, size, colorsPicked, setState, Store provider) {
+    showDialog(
+        context: context,
+        builder: (
+          BuildContext context,
+        ) {
+          return AlertDialog(
+            title: SingleChildScrollView(
+              child: SizedBox(
+                width: size.width * .3,
+                height: size.height * .5,
+                child: SingleChildScrollView(
+                  child: BlockPicker(
+                    pickerColor: colorsPicked,
+                    onColorChanged: (color) {
+                      setState(() {
+                        colorsPicked = color;
+                        provider.getColorPick(color);
+                      });
+                      print(
+                          "Colors.provider: ${provider.colorPick.red},${provider.colorPick.green},${provider.colorPick.blue}");
+                      print("Colors.back: ${colorsPicked}");
+                      Navigator.pop(
+                        context,
+                      );
+                    },
+                    layoutBuilder: (context, colors, child) {
+                      return GridView(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        gridDelegate:
+                            const SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 100,
+                          childAspectRatio: 1.0,
+                          crossAxisSpacing: 10,
+                          mainAxisExtent: 100,
+                          mainAxisSpacing: 10,
+                        ),
+                        children: [for (Color color in colors) child(color)],
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
+  readColor(res) {
+    String rgbSt = res;
+    List get = rgbSt.split(",");
+    // print("get   $get");
+    return Color.fromARGB(
+        255, int.parse(get[0]), int.parse(get[1]), int.parse(get[2]));
+  }
+}
